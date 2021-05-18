@@ -10,5 +10,5 @@ module.exports = (appRouter) => {
 
   const routerV1 = Router();
   usersRouterV1(routerV1);
-  appRouter.use('/v1', routerV2);
+  appRouter.use('/v1', routerV1);
 }

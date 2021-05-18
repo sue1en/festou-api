@@ -2,7 +2,7 @@ const { category } = require('../models/index');
 const categoryMapper = require('../mappers/categorie.mapper');
 const fileUtils = require('../utils/file.utils');
 
-const listaTodos = async () => {
+const getAll = async () => {
   const listaCategoriasDB = await category.find({});
   return listaCategoriasDB.map(categoryDB => {
     return categoryMapper.toDTO(categoryDB);
@@ -32,5 +32,5 @@ const createCategory = async (model) => {
 
 module.exports = {
   createCategory,
-  listaTodos,
+  getAll,
 }

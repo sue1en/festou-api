@@ -2,6 +2,7 @@
   "name": "projeto-04",
   "version": "1.0.0",
   "main": "index.js",
+  "repository": "https://gitlab.com/suelen.batista/bootcamp-project-04-backend-api.git",
   "author": "Suelen Batista <suelen.batista@al.infnet.edu.br>",
   "license": "MIT",
   "dependencies": {

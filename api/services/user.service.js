@@ -1,6 +1,7 @@
 const { user } = require('../models/index');
 const cryptography = require('../utils/cryptography.utils');
 const userMapper = require('../mappers/user.mapper');
+const md5 = require('md5');
 
 const userValidate = async (email, password) => {
   return await user.findOne({ email, senha: cryptography.createHash(password)}) ? true : false
@@ -18,3 +19,35 @@ const createCredential = async (userEmail) => {
     userDTO,  
   };
 };
+
+const authUser = async (email, password) => {
+  const resultFromDB = await userValidate(email, password);
+
+  if(!resultFromDB){
+    return {
+      success: false,
+      message: "não foi possível autenticar o usuário",
+      details: [
+        "usuário ou senha inválido",
+      ],
+    }
+  }
+
+  return {
+    success: true,
+    message: "usuário autenticado com sucesso",
+    details: await createCredential(email) 
+  }
+}
+
+const createUser = async () => {
+  return user.create({
+    email: 'testesuelen@email.com',
+    senha: md5(`123456${process.env.MD5_SECRET}`)
+  });
+}
+
+module.exports = {
+  authUser, 
+  createUser
+}
