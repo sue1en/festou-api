@@ -10,12 +10,12 @@ module.exports = (Router) => {
     .get(categoriesController.getAllCategoryCTRL)
     .post(
       fileUploadMiddleware('categorias'),
-      validateDTO(body, {
-        nome: joi.string().required().messages({
+      validateDTO("body", {
+        name: joi.string().required().messages({
           'any.required': `"nome" é um campo obrigatório`,
           'string.empty': `"nome" não deve ser vazio`,
         }),
-        descricao: joi.string().required().messages({
+        description: joi.string().required().messages({
           'any.required': `"descricao" é um campo obrigatório`,
           'string.empty': `"descricao" não deve ser vazio`,
         }),

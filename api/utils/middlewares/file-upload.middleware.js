@@ -1,8 +1,10 @@
+const path = require('path');
 const formidable = require('formidable');
 const fileUtils = require('../file.utils');
 
 const fileUpload = (destino) => {
-  const form = formidable.IncomingForm();
+  const form = formidable.IncomingForm({keepExtensions: true
+  });
   return (req, res, next) => {
     form.parse(req, (err, fields, files) => {
       if (!files.image) {
@@ -15,7 +17,7 @@ const fileUpload = (destino) => {
       }
 
       const newName = fileUtils.createName(files.image.type);
-      const newPath = fileUtils.createAdress(destino, newName);
+      const newPath = fileUtils.createAddress(destino, newName);
 
       req.body = {
         ...fields,
