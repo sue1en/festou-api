@@ -2,8 +2,10 @@ const path = require('path');
 const formidable = require('formidable');
 const fileUtils = require('../file.utils');
 
+const root_dir = path.join(path.dirname(require.main.filename),'tmp')
+
 const fileUpload = (destino) => {
-  const form = formidable.IncomingForm({keepExtensions: true
+  const form = formidable.IncomingForm({keepExtensions: true, uploadDir: root_dir
   });
   return (req, res, next) => {
     form.parse(req, (err, fields, files) => {

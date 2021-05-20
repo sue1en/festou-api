@@ -13,8 +13,15 @@ module.exports = {
     return res.status(statusCodeReturn).send(dataReturn);
   },
 
-  // editCategoryCTRL: async (req, res, next) => {
-  // },
+  editCategoryCTRL: async (req, res, next) => {
+    const { params, body } = req;
+    const serviceResult = await categoryService.editCategory(params.categoriaId, body);
+
+    const statusCodeReturn = serviceResult.success ? 200 : 400
+    const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
+
+    return res.status(statusCodeReturn).send(dataReturn);
+  },
 
   deleteCategoryCTRL: async (req, res, next) => {  
     const { params } = req;
@@ -24,7 +31,6 @@ module.exports = {
     const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
 
     return res.status(statusCodeReturn).send(dataReturn); 
-  
   },
 
   getAllCategoryCTRL: async (req, res, next) => {
