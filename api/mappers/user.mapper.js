@@ -7,6 +7,18 @@ const manageUserType = (type) => {
   }
 }
 
+const toUser2DTO = (model) => {
+  const { id, email, kind, name, nomeFantasia } = model;
+
+  console.log('nome: ', name);
+
+  return {
+    id,
+    email,
+    name: name ? name : nomeFantasia,
+    userType: manageUserType(kind),
+  }
+}
 const toUserDTO = (model) => {
   const { id, email, kind, name, nomeFantasia } = model;
 
@@ -22,4 +34,5 @@ const toUserDTO = (model) => {
 
 module.exports = {
   toUserDTO,
+  toUser2DTO,
 }

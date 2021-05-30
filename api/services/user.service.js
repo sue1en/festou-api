@@ -41,8 +41,8 @@ const authUser = async (email, password) => {
 }
 
 const createUser = async () => {
-  return user.create({
-    email: 'testesuelen@email.com',
+  const newUser = await user.create({
+    email: model.email,
     senha: md5(`123456${process.env.MD5_SECRET}`)
   });
 }

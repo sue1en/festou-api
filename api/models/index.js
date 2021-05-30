@@ -20,6 +20,9 @@ const user = mongoose.model('user', createSchema(undefined, userSchema, {
 const adminSchema =require('./admin.models');
 const admin = mongoose.model('admin', createSchema(userSchema, adminSchema, {}));
 
+const adminSchema =require('./fornecedor.models');
+const fornecedor = mongoose.model('fornecedor', createSchema(userSchema, fornecedorSchema, {}));
+
 const categoriesSchema = require('./category.models');
 const category = mongoose.model('categories', createSchema(undefined, categoriesSchema, {
   collection:'CategoriesCollection'
@@ -28,5 +31,6 @@ const category = mongoose.model('categories', createSchema(undefined, categories
 module.exports = {
   user,
   admin,
-  category
+  category,
+  fornecedor
 };
