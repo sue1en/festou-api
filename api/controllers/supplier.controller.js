@@ -47,7 +47,7 @@ module.exports = {
     const { supplierId } = req.params;
     const serviceResult = await supplierService.changeSupplierStatus(supplierId, 'Ativa');
 
-    
+      
 
   },
 
