@@ -3,6 +3,11 @@ const cryptography = require('../utils/cryptography.utils');
 const userMapper = require('../mappers/user.mapper');
 const md5 = require('md5');
 
+const isEmailRegistered = async (email) => {
+  const resultFromDB = user.find({ email });
+  return resultFromDB.length > 0 ? true : false
+};
+
 const userValidate = async (email, password) => {
   return await user.findOne({ email, senha: cryptography.createHash(password)}) ? true : false
 };
@@ -49,5 +54,6 @@ const createUser = async () => {
 
 module.exports = {
   authUser, 
-  createUser
+  createUser,
+  isEmailRegistered,
 }

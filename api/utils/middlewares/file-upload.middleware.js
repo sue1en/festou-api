@@ -13,7 +13,7 @@ const fileUpload = (destino) => {
         return res.status(400).send({
           message: 'não foi possível realizar a operação',
           details: [
-            '"image" é de preenchimento obrigatório.'
+            '"imagem" é de preenchimento obrigatório.'
           ]
         });
       }

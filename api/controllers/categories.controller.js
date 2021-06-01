@@ -1,11 +1,11 @@
-const categoryService = require('../services/categorie.service');
+const categoriesService = require('../services/categories.service');
 
 module.exports = {
 
-  createCategoryCTRL: async (req, res, next) => {
+  createCategoriesCTRL: async (req, res, next) => {
     const { body } = req;
     
-    const serviceResult = await categoryService.createCategory(body);
+    const serviceResult = await categoriesService.createCategories(body);
 
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
@@ -13,9 +13,9 @@ module.exports = {
     return res.status(statusCodeReturn).send(dataReturn);
   },
 
-  editCategoryCTRL: async (req, res, next) => {
+  editCategoriesCTRL: async (req, res, next) => {
     const { params, body } = req;
-    const serviceResult = await categoryService.editCategory(params.categoriaId, body);
+    const serviceResult = await categoriesService.editCategories(params.categoryId, body);
 
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
@@ -23,9 +23,9 @@ module.exports = {
     return res.status(statusCodeReturn).send(dataReturn);
   },
 
-  deleteCategoryCTRL: async (req, res, next) => {  
+  deleteCategoriesCTRL: async (req, res, next) => {  
     const { params } = req;
-    const serviceResult = await categoryService.deleteCategory(params.categoriaId);
+    const serviceResult = await categoriesService.deleteCategories(params.categoryId);
 
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
@@ -33,14 +33,14 @@ module.exports = {
     return res.status(statusCodeReturn).send(dataReturn); 
   },
 
-  getAllCategoryCTRL: async (req, res, next) => {
-    const serviceResult = await categoryService.getAll();
+  getAllCategoriesCTRL: async (req, res, next) => {
+    const serviceResult = await categoriesService.getAll();
     return res.status(200).send({data: serviceResult});
   },
 
-  getByIdCategoryCTRL: async (req, res, next) => {
+  getCategoryByIdCTRL: async (req, res, next) => {
     const { params } = req;
-    const serviceResult = await categoryService.getById(params.categoriaId);
+    const serviceResult = await categoriesService.getById(params.categoryId);
     
     if(!serviceResult){
       return res.status(400).send({

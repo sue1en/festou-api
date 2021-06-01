@@ -1,5 +1,4 @@
 const toListItemDTO = (model) => {
-
   const { _id, cnpj, nomeFantasia, status } = model;
 
   return {

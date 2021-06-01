@@ -1,24 +1,24 @@
-const { category } = require('../models/index');
-const categoryMapper = require('../mappers/categorie.mapper');
+const { categories } = require('../models/index');
+const categoriesMapper = require('../mappers/categories.mapper');
 const fileUtils = require('../utils/file.utils');
 
 const getAll = async () => {
-  const listaCategoriasDB = await category.find();
-  return listaCategoriasDB.map(categoryDB => {
-    return categoryMapper.toItemListDTO(categoryDB);
+  const CategoryFromDB = await categories.find();
+  return CategoryFromDB.map(categoryDB => {
+    return categoriesMapper.toItemListDTO(categoryDB);
   });
 }
 
-const getById = async(categoriaId) => {
-  const resultFromDB = await category.findById(categoriaId);
+const getById = async(categoryId) => {
+  const resultFromDB = await categories.findById(categoryId);
   if(resultFromDB) {
-    return categoryMapper.toDTO(resultFromDB);
+    return categoriesMapper.toDTO(resultFromDB);
   };
   return;
 }
 
 const createCategory = async (model) => {
-  const newCategory = await category.create({
+  const newCategory = await categories.create({
     name: model.name,
     description: model.description,
     status: model.status,
@@ -31,13 +31,13 @@ const createCategory = async (model) => {
   fileUtils.move(model.image.originalPath, model.image.newPath);
   return {
     success: true,
-    message: 'cadastro realizado com sucesso',
-    data: categoryMapper.toDTO(newCategory)
+    message: 'cadastro realizados com sucesso',
+    data: categoriesMapper.toDTO(newCategory)
   }
 }
 
-const editCategory = async (categoriaId, model) => {
-  const resultFromDB = await category.findOne({ _id:categoriaId });
+const editCategory = async (categoryId, model) => {
+  const resultFromDB = await categories.findOne({ _id:categoryId });
 
   if (!resultFromDB) { 
     return {
@@ -64,12 +64,12 @@ const editCategory = async (categoriaId, model) => {
   return {
     success: true,
     message: 'Operação realizada com sucesso!',
-    data: categoryMapper.toDTO(resultFromDB),
+    data: categoriesMapper.toDTO(resultFromDB),
   }
 };
 
-const deleteCategory = async (categoriaId) => {
-  const resultFromDB = await category.findOne({ _id:categoriaId });
+const deleteCategory = async (categoryId) => {
+  const resultFromDB = await categories.findOne({ _id:categoryId });
   if (!resultFromDB) { 
     return {
       success: false,
@@ -80,8 +80,8 @@ const deleteCategory = async (categoriaId) => {
   // const { image } = resultFromDB;
   fileUtils.remove('categorias', resultFromDB.image.name);
 
-  await category.deleteOne({
-    _id:categoriaId,
+  await categories.deleteOne({
+    _id: categoryId,
   });
 
   return {

@@ -1,4 +1,4 @@
-const fornecedorSchema = {
+const supplierSchema = {
 
   cnpj: {
     type: String,
@@ -34,4 +34,4 @@ const fornecedorSchema = {
   },
 }
 
-module.exports = fornecedorSchema;
+module.exports = supplierSchema;

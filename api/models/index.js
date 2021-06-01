@@ -20,17 +20,17 @@ const user = mongoose.model('user', createSchema(undefined, userSchema, {
 const adminSchema =require('./admin.models');
 const admin = mongoose.model('admin', createSchema(userSchema, adminSchema, {}));
 
-const adminSchema =require('./fornecedor.models');
-const fornecedor = mongoose.model('fornecedor', createSchema(userSchema, fornecedorSchema, {}));
+const supplierSchema =require('./supplier.models');
+const supplier = mongoose.model('supplier', createSchema(userSchema, supplierSchema, {}));
 
-const categoriesSchema = require('./category.models');
-const category = mongoose.model('categories', createSchema(undefined, categoriesSchema, {
+const categoriesSchema = require('./categories.models');
+const categories = mongoose.model('categories', createSchema(undefined, categoriesSchema, {
   collection:'CategoriesCollection'
 }));
 
 module.exports = {
   user,
   admin,
-  category,
-  fornecedor
+  categories,
+  supplier,
 };
