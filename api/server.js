@@ -18,6 +18,6 @@ router(app);
 
 const port = process.env.PORT ? Number(process.env.PORT) : 3333;
 
-app.listen(port, () => {console.log(`Server Running on http://localhost:${port}`)});
+app.listen(port, () => {console.log(`Server Running on http://localhost:${port} \n ________________________________`)});
 
 module.exports = app;

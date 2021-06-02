@@ -22,8 +22,8 @@ const move = (temporario, definitivo) => {
   return fs.renameSync(temporario, definitivo);
 }
 
-const remove = async (origem, arquivo) => {
-  return await fs.unlinkSync(path.join(root_dir, origem, arquivo)) 
+const remove = (origem, arquivo) => {
+  return fs.unlinkSync(path.join(root_dir, origem, arquivo)) 
 }
 
 module.exports = {

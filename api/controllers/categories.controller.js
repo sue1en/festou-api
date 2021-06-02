@@ -5,7 +5,7 @@ module.exports = {
   createCategoriesCTRL: async (req, res, next) => {
     const { body } = req;
     
-    const serviceResult = await categoriesService.createCategories(body);
+    const serviceResult = await categoriesService.createCategory(body);
 
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
@@ -41,6 +41,10 @@ module.exports = {
   getCategoryByIdCTRL: async (req, res, next) => {
     const { params } = req;
     const serviceResult = await categoriesService.getById(params.categoryId);
+
+    console.log("##########__serviceResult__##########")
+    console.log(serviceResult)
+    console.log("#####################################")
     
     if(!serviceResult){
       return res.status(400).send({

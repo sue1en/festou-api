@@ -1,5 +1,4 @@
-const categoryController = require('../../controllers/category.controller');
-const categoriesController = require('../../controllers/category.controller');
+const categoriesController = require('../../controllers/categories.controller');
 const fileUploadMiddleware = require('../../utils/middlewares/file-upload.middleware');
 const validateDTO = require('../../utils/middlewares/validate-dto.middleware');
 const joi = require('joi');
@@ -7,7 +6,7 @@ const joi = require('joi');
 module.exports = (Router) => {
   Router
     .route('/categorias')
-    .get(categoriesController.getAllCategoryCTRL)
+    .get(categoriesController.getAllCategoriesCTRL)
     .post(
       fileUploadMiddleware('categorias'),
       validateDTO("body", {
@@ -26,7 +25,7 @@ module.exports = (Router) => {
       }, {
         allowUnknown: true,
       }),
-      categoryController.createCategoryCTRL
+      categoriesController.createCategoriesCTRL
     )
   Router
     .route('/categorias/:categoriaId')
@@ -37,7 +36,7 @@ module.exports = (Router) => {
           'string.empty': `"categoria Id" não deve ser vazio`,
         })
       }),
-      categoryController.getByIdCategoryCTRL
+      categoriesController.getCategoryByIdCTRL
     )
     .delete(
       validateDTO("params", {
@@ -46,7 +45,7 @@ module.exports = (Router) => {
           'string.empty': `"categoria Id" não deve ser vazio`,
         })
       }),
-      categoryController.deleteCategoryCTRL
+      categoriesController.deleteCategoriesCTRL
     )
     .put(
       fileUploadMiddleware('categorias'),
@@ -72,7 +71,7 @@ module.exports = (Router) => {
       }, {
         allowUnknown: true,
       }),
-      categoryController.editCategoryCTRL
+      categoriesController.editCategoriesCTRL
     )
 
 
