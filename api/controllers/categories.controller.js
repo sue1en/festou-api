@@ -15,7 +15,7 @@ module.exports = {
 
   editCategoriesCTRL: async (req, res, next) => {
     const { params, body } = req;
-    const serviceResult = await categoriesService.editCategories(params.categoryId, body);
+    const serviceResult = await categoriesService.editCategory(params.categoryId, body);
 
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
@@ -25,7 +25,7 @@ module.exports = {
 
   deleteCategoriesCTRL: async (req, res, next) => {  
     const { params } = req;
-    const serviceResult = await categoriesService.deleteCategories(params.categoryId);
+    const serviceResult = await categoriesService.deleteCategory(params.categoryId);
 
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
@@ -41,10 +41,6 @@ module.exports = {
   getCategoryByIdCTRL: async (req, res, next) => {
     const { params } = req;
     const serviceResult = await categoriesService.getById(params.categoryId);
-
-    console.log("##########__serviceResult__##########")
-    console.log(serviceResult)
-    console.log("#####################################")
     
     if(!serviceResult){
       return res.status(400).send({

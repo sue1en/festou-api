@@ -1,4 +1,4 @@
-module.exports = {
+const userSchema = {
   email: {
     type:String,
     require: true,
@@ -21,4 +21,6 @@ module.exports = {
   //     require: false,
   //   },
 
-};
+}
+
+module.exports = userSchema;

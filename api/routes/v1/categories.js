@@ -28,21 +28,21 @@ module.exports = (Router) => {
       categoriesController.createCategoriesCTRL
     )
   Router
-    .route('/categorias/:categoriaId')
+    .route('/categorias/:categoryId')
     .get(
       validateDTO("params", {
-        categoriaId: joi.string().required().messages({
-          'any.required': `"categoria Id" é um campo obrigatório`,
-          'string.empty': `"categoria Id" não deve ser vazio`,
+        categoryId: joi.string().required().messages({
+          'any.required': `"categoryId" é um campo obrigatório`,
+          'string.empty': `"categoryId" não deve ser vazio`,
         })
       }),
       categoriesController.getCategoryByIdCTRL
     )
     .delete(
       validateDTO("params", {
-        categoriaId: joi.string().required().messages({
-          'any.required': `"categoria Id" é um campo obrigatório`,
-          'string.empty': `"categoria Id" não deve ser vazio`,
+        categoryId: joi.string().required().messages({
+          'any.required': `"categoryId" é um campo obrigatório`,
+          'string.empty': `"categoryId" não deve ser vazio`,
         })
       }),
       categoriesController.deleteCategoriesCTRL
@@ -50,9 +50,9 @@ module.exports = (Router) => {
     .put(
       fileUploadMiddleware('categorias'),
       validateDTO("params", {
-        categoriaId: joi.string().required().messages({
-          'any.required': `"categoria Id" é um campo obrigatório`,
-          'string.empty': `"categoria Id" não deve ser vazio`,
+        categoryId: joi.string().required().messages({
+          'any.required': `"categoryId" é um campo obrigatório`,
+          'string.empty': `"categoryId" não deve ser vazio`,
         })
       }),
       validateDTO("body", {

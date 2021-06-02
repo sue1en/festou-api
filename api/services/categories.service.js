@@ -10,11 +10,7 @@ const getAll = async () => {
 }
 
 const getById = async(categoryId) => {
-  const resultFromDB = await categories.findOne(categoryId);
-  
-  console.log("##########__resultFromDB__##########")
-  console.log(resultFromDB)
-  console.log("#####################################")
+  const resultFromDB = await categories.findById(categoryId);
 
   if(resultFromDB) {
     return categoriesMapper.toDTO(resultFromDB);

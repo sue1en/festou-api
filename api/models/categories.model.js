@@ -1,4 +1,4 @@
-module.exports = {
+const categoriesSchema = {
   name: {
     type:String,
     require: true,
@@ -24,5 +24,6 @@ module.exports = {
       type:String,
       require: false,
     },
-  },
+  }
 }
+module.exports = categoriesSchema

@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/static', express.static(__dirname + '/..' + '/projeto-04/backend/arquivos'))
+app.use('static', express.static(__dirname + '/..' + '/projeto-04/backend/arquivos'))
 
 //'C:/projeto-04'
 

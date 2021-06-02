@@ -15,7 +15,7 @@ const createName = (type) => {
 }
 
 const createDownloadAddress = (origem, fileName) => {
-  return path.join('/static', origem, fileName);
+  return path.join('static', origem, fileName);
 }
 
 const move = (temporario, definitivo) => {
