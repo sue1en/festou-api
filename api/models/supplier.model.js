@@ -1,30 +1,25 @@
 const supplierSchema = {
-
   cnpj: {
     type: String,
     required: true,
   },
-  nomeFantasia: {
+  tradeName: {
     type: String,
     required: true,
   },
-  endereco: {
+  address: {
     type: String,
     required: true,
   },
-  uf: {
+  state: {
     type: String,
     required: true,
   },
-  cidade: {
+  city: {
     type: String,
     required: true,
   },
-  responsavel: {
-    type: String,
-    required: true,
-  },
-  telefone: {
+  phoneNumber: {
     type: String,
     required: true,
   },

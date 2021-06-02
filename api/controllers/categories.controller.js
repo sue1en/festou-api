@@ -8,7 +8,7 @@ module.exports = {
     const serviceResult = await categoriesService.createCategory(body);
 
     const statusCodeReturn = serviceResult.success ? 200 : 400
-    const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details:serviceResult.details}
 
     return res.status(statusCodeReturn).send(dataReturn);
   },
@@ -18,7 +18,7 @@ module.exports = {
     const serviceResult = await categoriesService.editCategory(params.categoryId, body);
 
     const statusCodeReturn = serviceResult.success ? 200 : 400
-    const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details:serviceResult.details}
 
     return res.status(statusCodeReturn).send(dataReturn);
   },
@@ -28,7 +28,7 @@ module.exports = {
     const serviceResult = await categoriesService.deleteCategory(params.categoryId);
 
     const statusCodeReturn = serviceResult.success ? 200 : 400
-    const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details:serviceResult.details}
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details:serviceResult.details}
 
     return res.status(statusCodeReturn).send(dataReturn); 
   },

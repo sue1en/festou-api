@@ -1,10 +1,10 @@
 const toListItemDTO = (model) => {
-  const { _id, cnpj, nomeFantasia, status } = model;
+  const { _id, cnpj, tradeName, status } = model;
 
   return {
     id: _id,
     cnpj,
-    nomeFantasia,
+    tradeName,
     status,
   }
 }

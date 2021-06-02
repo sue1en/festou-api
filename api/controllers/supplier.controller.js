@@ -4,9 +4,11 @@ module.exports = {
 
   createSupplierCTRL: async (req, res, next) => {
     const { body } = req
+
     const serviceResult = await supplierService.createSupllier(body);
+    
     const statusCodeReturn = serviceResult.success ? 200 : 400;
-    const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details: serviceResult.datails}
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails}
 
     return res.status(statusCodeReturn).send(dataReturn)
   },
@@ -15,7 +17,7 @@ module.exports = {
     const { params, body } = req
     const serviceResult = await supplierService.editSupllier(params.supplierId, body);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
-    const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details: serviceResult.datails}
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails}
 
     return res.status(statusCodeReturn).send(dataReturn)
   },
@@ -24,7 +26,7 @@ module.exports = {
     const { params } = req
     const serviceResult = await supplierService.deleteSupllier(params.supplierId);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
-    const dataReturn = statusCodeReturn.success ? {data: serviceResult.data} : {details: serviceResult.datails}
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails}
 
     return res.status(statusCodeReturn).send(dataReturn)
   },

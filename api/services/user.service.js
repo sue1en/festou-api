@@ -4,7 +4,7 @@ const userMapper = require('../mappers/user.mapper');
 const md5 = require('md5');
 
 const isEmailRegistered = async (email) => {
-  const resultFromDB = user.find({ email });
+  const resultFromDB = await user.find({ email });
   return resultFromDB.length > 0 ? true : false
 };
 

@@ -1,5 +1,5 @@
 const { supplier } = require('../models/index');
-const supplierMapper = require('../mappers/supplier.mapper');
+const { toListItemDTO } = require('../mappers/supplier.mapper');
 const fileUtils = require('../utils/file.utils');
 const { isEmailRegistered } = require('./user.service');
 const { createHash } = require('../utils/cryptography.utils');
@@ -12,7 +12,7 @@ const isCnpjRegistered = async (cnpj) =>{
 const createSupllier = async(model) => {
   const { email, cnpj, password, ...resto} = model;
 
-  if(isEmailRegistered){
+  if(await isEmailRegistered(email)){
     return{
       success: false,
       message: 'Operação não pode ser realizada.',
@@ -20,11 +20,11 @@ const createSupllier = async(model) => {
     }
   };
 
-  if(isCnpjRegistered){
+  if(await isCnpjRegistered(cnpj)){
     return{
       success: false,
       message: 'Operação não pode ser realizada.',
-      details: ['Email informado já está cadastrado'],
+      details: ['Cnpj informado já está cadastrado'],
     }
   };
 
@@ -48,11 +48,17 @@ const createSupllier = async(model) => {
 const getAllSupllier = async () => {
   const supplierFromDB = await supplier.find();
   return supplierFromDB.map(supplierDB => {
-    return supplierMapper.toItemListDTO(supplierDB);
+    return toListItemDTO(supplierDB);
   });
 }
 
-const getSupllierById = async() => {
+const getSupllierById = async(supplierId) => {
+  const supplierFromDB = await supplier.findById(supplierId)
+
+  if(supplierFromDB){
+    return toListItemDTO(supplierFromDB);
+  };
+  return; 
 };
 
 const editSupllier = async() => {
