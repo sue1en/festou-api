@@ -15,7 +15,7 @@ module.exports = {
 
   editSupplierCTRL: async (req, res, next) => {
     const { params, body } = req
-    const serviceResult = await supplierService.editSupllier(params.supplierId, body);
+    const serviceResult = await supplierService.editSupplier(params.supplierId, body);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails}
 
@@ -24,9 +24,9 @@ module.exports = {
 
   deleteSupplierCTRL: async (req, res, next) => {
     const { params } = req
-    const serviceResult = await supplierService.deleteSupllier(params.supplierId);
+    const serviceResult = await supplierService.deleteSupplier(params.supplierId);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
-    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails}
+    const dataReturn = serviceResult.success ? {message: serviceResult.message} : {details: serviceResult.datails}
 
     return res.status(statusCodeReturn).send(dataReturn)
   },
@@ -49,11 +49,23 @@ module.exports = {
     const { supplierId } = req.params;
     const serviceResult = await supplierService.changeSupplierStatus(supplierId, 'Ativa');
 
-      
+    const statusCodeReturn = serviceResult.success ? 200 : 400;
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails};
 
+    return res.status(statusCodeReturn).send({...dataReturn})
   },
-
+  
   deactivateSupplierCTRL: async (req, res, next) => {
+    const { supplierId } = req.params;
+    const serviceResult = await supplierService.changeSupplierStatus(supplierId, 'Inativa');
+  
+    const statusCodeReturn = serviceResult.success ? 200 : 400;
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails};
+  
+    return res.status(statusCodeReturn).send({
+      message: "Operação realizada com sucesso.",
+      ...dataReturn
+    })
   },
 
 }

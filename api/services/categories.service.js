@@ -3,17 +3,17 @@ const categoriesMapper = require('../mappers/categories.mapper');
 const fileUtils = require('../utils/file.utils');
 
 const getAll = async () => {
-  const CategoryFromDB = await categories.find();
-  return CategoryFromDB.map(categoryDB => {
+  const categoryFromDB = await categories.find();
+  return categoryFromDB.map(categoryDB => {
     return categoriesMapper.toItemListDTO(categoryDB);
   });
 }
 
 const getById = async(categoryId) => {
-  const resultFromDB = await categories.findById(categoryId);
+  const categoryFromDB = await categories.findById(categoryId);
 
-  if(resultFromDB) {
-    return categoriesMapper.toDTO(resultFromDB);
+  if(categoryFromDB) {
+    return categoriesMapper.toDTO(categoryFromDB);
   };
   return;
 }
@@ -38,9 +38,9 @@ const createCategory = async (model) => {
 }
 
 const editCategory = async (categoryId, model) => {
-  const resultFromDB = await categories.findOne({ _id:categoryId });
+  const categoryFromDB = await categories.findOne({ _id:categoryId });
 
-  if (!resultFromDB) { 
+  if (!categoryFromDB) { 
     return {
       success: false,
       message: 'não foi possível realizar a operação',
@@ -48,38 +48,38 @@ const editCategory = async (categoryId, model) => {
     }
   };
 
-  fileUtils.remove('categorias', resultFromDB.image.name);
+  fileUtils.remove('categorias', categoryFromDB.image.name);
 
-  resultFromDB.name = model.name;
-  resultFromDB.description = model.description;
-  resultFromDB.status = model.status;
-  resultFromDB.image = {
+  categoryFromDB.name = model.name;
+  categoryFromDB.description = model.description;
+  categoryFromDB.status = model.status;
+  categoryFromDB.image = {
     originalName:model.image.originalName,
     name:model.image.newName,
     type:model.image.type,
   }
 
-  await resultFromDB.save();
+  await categoryFromDB.save();
   fileUtils.move(model.image.originalPath, model.image.newPath);
 
   return {
     success: true,
     message: 'Operação realizada com sucesso!',
-    data: categoriesMapper.toDTO(resultFromDB),
+    data: categoriesMapper.toDTO(categoryFromDB),
   }
 };
 
 const deleteCategory = async (categoryId) => {
-  const resultFromDB = await categories.findOne({ _id:categoryId });
-  if (!resultFromDB) { 
+  const categoryFromDB = await categories.findOne({ _id:categoryId });
+  if (!categoryFromDB) { 
     return {
       success: false,
       message: 'não foi possível realizar a operação',
       details: ['"categoriaID" não existe.']
     }
   };
-  // const { image } = resultFromDB;
-  fileUtils.remove('categorias', resultFromDB.image.name);
+  // const { image } = categoryFromDB;
+  fileUtils.remove('categorias', categoryFromDB.image.name);
 
   await categories.deleteOne({
     _id: categoryId,

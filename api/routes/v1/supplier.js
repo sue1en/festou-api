@@ -53,17 +53,85 @@ module.exports = (Router) => {
     .get(
       validateDTO("params", {
         supplierId: joi.string().required().messages({
-          'any.required': `"categoryId" é um campo obrigatório`,
-          'string.empty': `"categoryId" não deve ser vazio`,
+          'any.required': `"supplierId" é um campo obrigatório`,
+          'string.empty': `"supplierId" não deve ser vazio`,
         }),
       }),
       supplierController.getSupplierByIdCTRL
     )
-    .put()
+    .put(
+      validateDTO("params", {
+        supplierId: joi.string().required().messages({
+          'any.required': `"supplierId" é um campo obrigatório`,
+          'string.empty': `"supplierId" não deve ser vazio`,
+        }),
+      }),
+      validateDTO("body", {
+        cnpj: joi.number().required().messages({
+          'any.required': `"cnpj" é um campo obrigatório`,
+          'string.empty': `"cnpj" não deve ser vazio`,
+        }),
+        tradeName: joi.string().required().messages({
+          'any.required': `"tradeName" é um campo obrigatório`,
+          'string.empty': `"tradeName" não deve ser vazio`,
+        }),
+        address: joi.string().required().messages({
+          'any.required': `"address" é um campo obrigatório`,
+          'string.empty': `"address" não deve ser vazio`,
+        }),
+        state: joi.string().required().messages({
+          'any.required': `"state" é um campo obrigatório`,
+          'string.empty': `"state" não deve ser vazio`,
+        }),
+        city: joi.string().required().messages({
+          'any.required': `"city" é um campo obrigatório`,
+          'string.empty': `"city" não deve ser vazio`,
+        }),
+        phoneNumber: joi.string().required().messages({
+          'any.required': `"phoneNumber" é um campo obrigatório`,
+          'string.empty': `"phoneNumber" não deve ser vazio`,
+        }),
+      }),
+      supplierController.editSupplierCTRL
+    )
     
   //deleta
   Router
-    .route('/fornecedor/:supplierid')
-    .delete()
-  
+    .route('/fornecedor/:supplierId')
+    .delete(
+      validateDTO("params", {
+        supplierId: joi.string().required().messages({
+          'any.required': `"supplierId" é um campo obrigatório`,
+          'string.empty': `"supplierId" não deve ser vazio`,
+        }),
+      }), 
+      supplierController.deleteSupplierCTRL
+    )
+
+  Router
+  .route('/fornecedor/:supplierId/ativa')
+  .put(
+    validateDTO("params", {
+      supplierId: joi.string().required().messages({
+        'any.required': `"supplierId" é um campo obrigatório`,
+        'string.empty': `"supplierId" não deve ser vazio`,
+      }),
+    }), 
+    supplierController.activateSupplierCTRL
+    )
+    
+  Router
+    .route('/fornecedor/:supplierId/inativa')
+    .put(
+      validateDTO("params", {
+        supplierId: joi.string().required().messages({
+          'any.required': `"supplierId" é um campo obrigatório`,
+          'string.empty': `"supplierId" não deve ser vazio`,
+        }),
+      }), 
+      supplierController.deactivateSupplierCTRL
+    )
+
+
+
 }

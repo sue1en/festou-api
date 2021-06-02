@@ -1,5 +1,5 @@
 const { supplier } = require('../models/index');
-const { toListItemDTO } = require('../mappers/supplier.mapper');
+const { toListItemDTO, toDTO } = require('../mappers/supplier.mapper');
 const fileUtils = require('../utils/file.utils');
 const { isEmailRegistered } = require('./user.service');
 const { createHash } = require('../utils/cryptography.utils');
@@ -61,31 +61,73 @@ const getSupllierById = async(supplierId) => {
   return; 
 };
 
-const editSupllier = async() => {
+const editSupplier = async(supplierId, model) => {
+  const supplierFromDB = await supplier.findById(supplierId)
+  if(!supplierFromDB){
+    return {
+      success: false,
+      message: 'Operação não pode ser realizada.',
+      details: ['Não existe fornecedor cadastrado para o id informado'],
+    }
+  }
+
+  const { cnpj, tradeName, address, state, city, phoneNumber } = model
+
+  supplierFromDB.cnpj = cnpj;
+  supplierFromDB.tradeName = tradeName;
+  supplierFromDB.address = address;
+  supplierFromDB.state = state;
+  supplierFromDB.city = city;
+  supplierFromDB.phoneNumber = phoneNumber;
+
+  await supplierFromDB.save()
+
+  return {
+    success: true,
+    message: 'Operação realizada com sucesso.',
+    data: {...toDTO(supplierFromDB)}
+  }
 };
 
-const deleteSupllier = async() => {
+const deleteSupplier = async(supplierId) => {
+  const supplierFromDB = await supplier.findById(supplierId)
+  if(!supplierFromDB){
+    return {
+      success: false,
+      message: 'Operação não pode ser realizada.',
+      details: ['Não existe fornecedor cadastrado para o id informado'],
+    }
+  }
+
+  await supplier.deleteOne({
+    _id:supplierId
+  })
+
+  return {
+    success: true,
+    message: 'Operação realizada com sucesso.',
+  }
 };
 
 const changeSupplierStatus = async(suppliersId, status) => {
-  const resultFromDB = await supplier.findById(suppliersId);
-  if (!resultFromDB) {
+  const supplierFromDB = await supplier.findById(suppliersId);
+  if (!supplierFromDB) {
     return {
       success: false,
       message: 'Operação não pode ser realizada.',
       details: [
-        'Não existe fornecedor cadastrado para o id cadastrado'
+        'Não existe fornecedor cadastrado para o id informado'
       ],
     }
   }
 
-  resultFromDB.status = status;
-  await resultFromDB.save();
+  supplierFromDB.status = status;
+  await supplierFromDB.save();
   return {
     success:true,
     message: 'Operação realizada com sucesso.',
     data: {
-      ...toItemListDTO(resultFromDB.toJSON())
+      ...toListItemDTO(supplierFromDB.toJSON())
     }
   }
 };
@@ -95,7 +137,7 @@ module.exports = {
   createSupllier,
   getAllSupllier,
   getSupllierById,
-  editSupllier,
-  deleteSupllier,
+  editSupplier,
+  deleteSupplier,
   changeSupplierStatus,
 }

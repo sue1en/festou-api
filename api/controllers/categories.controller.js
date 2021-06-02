@@ -28,7 +28,7 @@ module.exports = {
     const serviceResult = await categoriesService.deleteCategory(params.categoryId);
 
     const statusCodeReturn = serviceResult.success ? 200 : 400
-    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details:serviceResult.details}
+    const dataReturn = serviceResult.success ? {message: serviceResult.message} : {details:serviceResult.details}
 
     return res.status(statusCodeReturn).send(dataReturn); 
   },
