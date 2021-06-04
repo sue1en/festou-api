@@ -2,6 +2,7 @@ const { user } = require('../models/index');
 const cryptography = require('../utils/cryptography.utils');
 const userMapper = require('../mappers/user.mapper');
 const md5 = require('md5');
+const { email } = require('../models/user.model');
 
 const isEmailRegistered = async (email) => {
   const resultFromDB = await user.find({ email });
@@ -25,7 +26,7 @@ const createCredential = async (userEmail) => {
   };
 };
 
-const authUser = async (email, password) => {
+const authUserService = async (email, password) => {
   const resultFromDB = await userValidate(email, password);
 
   if(!resultFromDB){
@@ -37,7 +38,6 @@ const authUser = async (email, password) => {
       ],
     }
   }
-
   return {
     success: true,
     message: "usuário autenticado com sucesso",
@@ -46,14 +46,15 @@ const authUser = async (email, password) => {
 }
 
 const createUser = async () => {
-  const newUser = await user.create({
-    email: model.email,
+  return user.create({
+    email: 'suelen@email.com',
     senha: md5(`123456${process.env.MD5_SECRET}`)
   });
+
 }
 
 module.exports = {
-  authUser, 
+  authUserService, 
   createUser,
   isEmailRegistered,
 }
