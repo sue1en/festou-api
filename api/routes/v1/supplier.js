@@ -6,7 +6,7 @@ module.exports = (Router) => {
   //
   //cria e retorna todos
   Router
-    .route('/fornecedor')
+    .route('/supplier')
     .get(supplierController.getAllSupplierCTRL)
     .post(
       validateDTO("body", {
@@ -49,7 +49,7 @@ module.exports = (Router) => {
 
   //retorna por id / edita
   Router
-    .route('/fornecedor/:supplierId')
+    .route('/supplier/:supplierId')
     .get(
       validateDTO("params", {
         supplierId: joi.string().required().messages({
@@ -97,7 +97,7 @@ module.exports = (Router) => {
     
   //deleta
   Router
-    .route('/fornecedor/:supplierId')
+    .route('/supplier/:supplierId')
     .delete(
       validateDTO("params", {
         supplierId: joi.string().required().messages({
@@ -109,7 +109,7 @@ module.exports = (Router) => {
     )
 
   Router
-  .route('/fornecedor/:supplierId/ativa')
+  .route('/supplier/:supplierId/ativa')
   .put(
     validateDTO("params", {
       supplierId: joi.string().required().messages({
@@ -121,7 +121,7 @@ module.exports = (Router) => {
     )
     
   Router
-    .route('/fornecedor/:supplierId/inativa')
+    .route('/supplier/:supplierId/inativa')
     .put(
       validateDTO("params", {
         supplierId: joi.string().required().messages({
@@ -131,7 +131,4 @@ module.exports = (Router) => {
       }), 
       supplierController.deactivateSupplierCTRL
     )
-
-
-
 }
