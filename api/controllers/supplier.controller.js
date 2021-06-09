@@ -68,4 +68,16 @@ module.exports = {
     })
   },
 
+  //products by supplier:
+  getProductsBySupplierCTRL: async ( req, res, next ) => {
+    const { params } = req;
+
+    const data = await supplierService.getProductsBySupplier(params.supplierId);
+
+    return res.status(200).send({
+      data,
+    })
+  }
+
+
 }

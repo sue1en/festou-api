@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const supplierSchema = {
-  cnpj: {
+const clientsSchema = {
+  name: {
     type: String,
     required: true,
   },
-  tradeName: {
+  birthdate: {
     type: String,
     required: true,
   },
@@ -30,11 +30,20 @@ const supplierSchema = {
     type: String,
     required: true,
   },
-
-  products:[{
-    type:Schema.Types.ObjectId,
-    ref: 'products'
-  }]
+  image: {
+    originalName: {
+      type:String,
+      require: false,
+    },
+    name: {
+      type:String,
+      require: false,
+    },
+    type: {
+      type:String,
+      require: false,
+    },
+  },
 }
 
-module.exports = supplierSchema;
+module.exports = clientsSchema;

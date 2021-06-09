@@ -1,4 +1,5 @@
 const supplierController = require('../../controllers/supplier.controller');
+const productsController = require('../../controllers/products.controller');
 const validateDTO = require('../../utils/middlewares/validate-dto.middleware')
 const joi = require('joi')
 
@@ -131,4 +132,48 @@ module.exports = (Router) => {
       }), 
       supplierController.deactivateSupplierCTRL
     )
+
+  //_______Produtos
+  Router
+    .route('/supplier/:supplierId/products')
+    .get(
+      validateDTO('params', {
+        supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+          'any.required': `"supplierId" é um campo obrigatório`,
+          'string.empty': `"supplierId" não deve ser vazio`,
+        })
+      }),
+      supplierController.getProductsBySupplierCTRL
+    )
+    .post(
+      validateDTO('params', {
+        supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+          'any.required': `"supplierId" é um campo obrigatório`,
+          'string.empty': `"supplierId" não deve ser vazio`,
+        })
+      }),
+      validateDTO('body', {
+      name: joi.string().required().messages({
+        'any.required': `"name" é um campo obrigatório`,
+        'string.empty': `"name" não deve ser vazio`,
+      }),
+      description: joi.string().required().messages({
+        'any.required': `"description" é um campo obrigatório`,
+        'string.empty': `"description" não deve ser vazio`,
+      }),
+      price: joi.number().required().messages({
+        'any.required': `"price" é um campo obrigatório`,
+        'string.empty': `"price" não deve ser vazio`,
+      }),
+      categoriesId: joi.string().required().messages({
+        'any.required': `"categoriesId" é um campo obrigatório`,
+        'string.empty': `"categoriesId" não deve ser vazio`,
+      }),
+    }, {
+      allowUnknown: true,
+    }),
+    productsController.CreateProductCTRL
+  )
+
+
 }

@@ -1,8 +1,9 @@
 const toListItemDTO = (model) => {
-  const { _id, cnpj, tradeName, status } = model;
+  const { _id, email, cnpj, tradeName, status } = model;
 
   return {
     id: _id,
+    email,
     cnpj,
     tradeName,
     status,
@@ -10,16 +11,11 @@ const toListItemDTO = (model) => {
 }
 
 const toDTO = (model) => {
-  const { _id, cnpj, tradeName, address, state, city, phoneNumber } = model
+  const { _id, password, cratedAt, udatedAt, __v, kind,products, ...content } = model
 
   return {
     id: _id,
-    cnpj,
-    tradeName,
-    address,
-    state,
-    city,
-    phoneNumber
+    ...content,  
   }
 }
 

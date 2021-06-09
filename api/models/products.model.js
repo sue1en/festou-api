@@ -1,13 +1,17 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const categoriesSchema = {
+const productsSchema = {
   name: {
     type:String,
     require: true,
   },
   description: {
     type:String,
+    require: false,
+  },
+  price: {
+    type:Number,
     require: false,
   },
   status: {
@@ -29,9 +33,13 @@ const categoriesSchema = {
     },
   },
 
-  products:[{
-    type:Schema.Types.ObjectId,
-    ref: 'products'
-  }]
+  categories:{
+    type: Schema.Types.ObjectId,
+    ref: 'categories'
+  },
+  supplier:{
+    type: Schema.Types.ObjectId,
+    ref: 'supplier'
+  },
 }
-module.exports = categoriesSchema
+module.exports = productsSchema

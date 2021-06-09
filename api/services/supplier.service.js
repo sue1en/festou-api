@@ -1,4 +1,5 @@
-const { supplier } = require('../models/index');
+const { products, categories, supplier } = require('../models/index');
+const productsMapper = require('../mappers/product.mapper');
 const { toListItemDTO, toDTO } = require('../mappers/supplier.mapper');
 const fileUtils = require('../utils/file.utils');
 const { isEmailRegistered } = require('./user.service');
@@ -130,6 +131,16 @@ const changeSupplierStatus = async(suppliersId, status) => {
       ...toListItemDTO(supplierFromDB.toJSON())
     }
   }
+
+  
+};
+
+const getProductsBySupplier = async (supplierId) => {
+  const supplierFromDB = await supplier.findById(supplierId).populate('products');
+  const supplierAsJSON = supplierFromDB.toJSON();
+  return supplierAsJSON.products.map(item => {
+    return productsMapper.toListItemDTO(item);
+  })
 };
 
 
@@ -140,4 +151,5 @@ module.exports = {
   editSupplier,
   deleteSupplier,
   changeSupplierStatus,
+  getProductsBySupplier,
 }

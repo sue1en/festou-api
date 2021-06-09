@@ -5,7 +5,7 @@ const enderecoRaiz = process.env.FILE_BASE_PATH;
 
 const root_dir = path.join(path.dirname(require.main.filename),'arquivos')
 
-const createAddress = (destino, fileName) => {
+const createAddress = (destino, fileName = "" ) => {
   return path.join(enderecoRaiz, destino, fileName)
 };
 

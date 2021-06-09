@@ -16,14 +16,20 @@ const createToken = (model) => {
 
 const validateToken = (token) => {
   try {
-    return jwt.verify(token, jwtHashSecret);
+    jwt.verify(token, jwtHashSecret);
+    return true;
   } catch (error) {
-    return undefined;
+    return false;
   }
 };
+
+const decodeToken = (token) => {
+  return jwt.decode(token);
+}
 
 module.exports = {
   createHash,
   createToken,
   validateToken,
+  decodeToken
 }
