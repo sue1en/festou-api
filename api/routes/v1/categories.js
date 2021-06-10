@@ -74,5 +74,19 @@ module.exports = (Router) => {
       categoriesController.editCategoriesCTRL
     )
 
+  Router
+    .route('/categorias/:categoryId/products')
+    .get(
+      validateDTO("params", {
+        categoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+          'any.required': `"categoryId" é um campo obrigatório`,
+          'string.empty': `"categoryId" não deve ser vazio`,
+        })
+    }),
+      categoriesController.getProductsByCategoryCTRL
+    )
+
+
+    
 
 }

@@ -1,5 +1,6 @@
-const { categories } = require('../models/index');
+const { categories, products } = require('../models/index');
 const categoriesMapper = require('../mappers/categories.mapper');
+const productsMapper = require('../mappers/product.mapper');
 const fileUtils = require('../utils/file.utils');
 
 const getAll = async () => {
@@ -89,12 +90,22 @@ const deleteCategory = async (categoryId) => {
     success: true,
     message: 'Operação realizada com sucesso!'
   }
-}
+};
+
+const getProductsByCategory = async (categoriesId) => {
+  const categoryFromDB = await categories.findById(categoriesId).populate('products');
+  const categoriesAsJSON = categoryFromDB.toJSON();
+  return categoriesAsJSON.products.map(item => {
+    return productsMapper.toListItemDTO(item);
+  })
+};
+
 
 module.exports = {
   getAll,
   getById,
   createCategory,
   editCategory,
-  deleteCategory
+  deleteCategory,
+  getProductsByCategory
 }

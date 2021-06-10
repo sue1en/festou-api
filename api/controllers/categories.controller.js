@@ -52,5 +52,13 @@ module.exports = {
     return res.status(200).send(serviceResult);
   },
 
+  //Produto
+  getProductsByCategoryCTRL: async (req, res, next ) => {
+    const { params } = req
+    
+    const serviceResult = await categoriesService.getProductsByCategory(params.categoryId);
+
+    return res.status(200).send(serviceResult)
+  }
 
 }

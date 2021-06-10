@@ -31,7 +31,7 @@ module.exports = (Router) => {
           'any.required': `"city" é um campo obrigatório`,
           'string.empty': `"city" não deve ser vazio`,
         }),
-        phoneNumber: joi.string().required().messages({
+        phoneNumber: joi.number().required().messages({
           'any.required': `"phoneNumber" é um campo obrigatório`,
           'string.empty': `"phoneNumber" não deve ser vazio`,
         }),

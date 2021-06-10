@@ -11,7 +11,7 @@ const isCnpjRegistered = async (cnpj) =>{
 };
 
 const createSupllier = async(model) => {
-  const { email, cnpj, password, ...resto} = model;
+  const { email, cnpj, password, ...content} = model;
 
   if(await isEmailRegistered(email)){
     return{
@@ -32,7 +32,7 @@ const createSupllier = async(model) => {
   const newSupplier = await supplier.create({
     email,
     cnpj,
-    ...resto,
+    ...content,
     password: createHash(password),
     status: 'Em analise'
   });

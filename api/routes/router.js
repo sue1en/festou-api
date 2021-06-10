@@ -5,6 +5,7 @@ const usersRouterV1 = require('./v1/users');
 const categoriesRouterV1 = require('./v1/categories');
 const supplierRouterV1 = require('./v1/supplier');
 const productsRouterV1 = require('./v1/products');
+const clientsRouterV1 = require('./v1/clients');
 
 module.exports = (appRouter) => {
   appRouter.get('/', (req, res, next) => {
@@ -16,5 +17,6 @@ module.exports = (appRouter) => {
   categoriesRouterV1(routerV1);
   supplierRouterV1(routerV1);
   productsRouterV1(routerV1);
+  clientsRouterV1(routerV1);
   appRouter.use('/v1', routerV1);
 }
