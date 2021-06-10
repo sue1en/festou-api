@@ -131,8 +131,6 @@ const changeSupplierStatus = async(suppliersId, status) => {
       ...toListItemDTO(supplierFromDB.toJSON())
     }
   }
-
-  
 };
 
 const getProductsBySupplier = async (supplierId) => {

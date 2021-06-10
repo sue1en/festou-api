@@ -25,13 +25,20 @@ module.exports = {
   },
 
   getAllProductCTRL: async ( req, res, next ) => {
-
+    const serviceResult = await productsService.getAllProduct()
+    return res.status(200).send(serviceResult);
   },
 
   getProductByIdCTRL: async ( req, res, next ) => {
-
+    const { params } = req;
+    
+    const serviceResult = await productsService.getProductById(params.productId)
+    if(!serviceResult){
+      return res.status(400).send({ details: ["produto não existe"]});
+    }
+    
+    return res.status(200).send(serviceResult);
   },
-
 
   activateProductCTRL: ( req, res, next ) => {
 
@@ -40,6 +47,5 @@ module.exports = {
   deactivateProductCTRL: ( req, res, next ) => {
 
   },
-
 
 }

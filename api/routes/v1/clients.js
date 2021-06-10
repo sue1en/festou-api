@@ -1,7 +1,6 @@
 const clientsController = require('../../controllers/clients.controller');
 const joi = require('joi');
 const validateDTO = require('../../utils/middlewares/validate-dto.middleware');
-const { Router } = require('express');
 
 module.exports = (Router) => {
 
@@ -44,5 +43,52 @@ module.exports = (Router) => {
         }),
       }),
       clientsController.createClientsCTRL
+    )
+
+  Router
+    .route('/clients/:clientId')
+    .get(
+      validateDTO("params", {
+        clientId: joi.string().required().messages({
+          'any.required': `"clientId" é um campo obrigatório`,
+          'string.empty': `"clientId" não deve ser vazio`,
+        }),  
+      }),  
+      clientsController.getClientsByIdCTRL
+    )
+    .put(
+      validateDTO("params", {
+        clientId: joi.string().required().messages({
+          'any.required': `"clientId" é um campo obrigatório`,
+          'string.empty': `"clientId" não deve ser vazio`,
+        }),  
+      }),  
+      validateDTO("body", {
+        name: joi.string().required().messages({
+          'any.required': `"name" é um campo obrigatório`,
+          'string.empty': `"name" não deve ser vazio`,
+        }),
+        birthdate: joi.string().required().messages({
+          'any.required': `"birthdate" é um campo obrigatório`,
+          'string.empty': `"birthdate" não deve ser vazio`,
+        }),
+        address: joi.string().required().messages({
+          'any.required': `"address" é um campo obrigatório`,
+          'string.empty': `"address" não deve ser vazio`,
+        }),
+        state: joi.string().required().messages({
+          'any.required': `"state" é um campo obrigatório`,
+          'string.empty': `"state" não deve ser vazio`,
+        }),
+        city: joi.string().required().messages({
+          'any.required': `"city" é um campo obrigatório`,
+          'string.empty': `"city" não deve ser vazio`,
+        }),
+        phoneNumber: joi.number().required().messages({
+          'any.required': `"phoneNumber" é um campo obrigatório`,
+          'string.empty': `"phoneNumber" não deve ser vazio`,
+        }),
+      }),
+      clientsController.editClientsCTRL
     )
 }

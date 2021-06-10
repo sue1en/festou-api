@@ -70,15 +70,22 @@ const getAllProduct = async () => {
 };
 
 
+const getProductById = async (productId) => {
+  const productsFromDB = await products.findById(productId);
+  if(productsFromDB){
+    return toListItemDTO(productsFromDB)
+  }
+  return 
+}
+
 const findByFilter = async () => {
   const mongoFilter = {};
-
-
-
 
 }
 
 
 module.exports = {
   createProduct,
+  getAllProduct,
+  getProductById,
 }
