@@ -29,7 +29,7 @@ const toUserDTO = (model) => {
   return {
     id,
     email,
-    userType: manageUserType(kind),
+    kind: manageUserType(kind),
   }
 }
 

@@ -1,7 +1,7 @@
 const { products, categories, supplier } = require('../models/index');
 const productsMapper = require('../mappers/product.mapper');
 const { toListItemDTO, toDTO } = require('../mappers/supplier.mapper');
-const fileUtils = require('../utils/file.utils');
+// const fileUtils = require('../utils/file.utils');
 const { isEmailRegistered } = require('./user.service');
 const { createHash } = require('../utils/cryptography.utils');
 
@@ -12,7 +12,6 @@ const isCnpjRegistered = async (cnpj) =>{
 
 const createSupllier = async(model) => {
   const { email, cnpj, password, ...content} = model;
-
   if(await isEmailRegistered(email)){
     return{
       success: false,
@@ -20,7 +19,7 @@ const createSupllier = async(model) => {
       details: ['Email informado já está cadastrado'],
     }
   };
-
+  
   if(await isCnpjRegistered(cnpj)){
     return{
       success: false,
@@ -28,7 +27,7 @@ const createSupllier = async(model) => {
       details: ['Cnpj informado já está cadastrado'],
     }
   };
-
+  
   const newSupplier = await supplier.create({
     email,
     cnpj,
@@ -36,7 +35,7 @@ const createSupllier = async(model) => {
     password: createHash(password),
     status: 'Em analise'
   });
-
+  
   return {
     success: true,
     message: 'Operação realizada com sucesso.',
@@ -55,7 +54,8 @@ const getAllSupllier = async () => {
 
 const getSupllierById = async(supplierId) => {
   const supplierFromDB = await supplier.findById(supplierId)
-
+  console.log(supplierFromDB.id === supplierId ? true : false)
+  
   if(supplierFromDB){
     return toListItemDTO(supplierFromDB);
   };
@@ -71,18 +71,26 @@ const editSupplier = async(supplierId, model) => {
       details: ['Não existe fornecedor cadastrado para o id informado'],
     }
   }
-
-  const { cnpj, tradeName, address, state, city, phoneNumber } = model
-
+  if(supplierId !== supplierFromDB.id){
+    return {
+      success: false,
+      message: 'Operação não pode ser realizada.',
+      details: ['Usuário não autorizado.'],
+    }
+  }
+  
+  const { cnpj, tradeName, description, address, state, city, phoneNumber } = model
+  
   supplierFromDB.cnpj = cnpj;
   supplierFromDB.tradeName = tradeName;
+  supplierFromDB.description = description;
   supplierFromDB.address = address;
   supplierFromDB.state = state;
   supplierFromDB.city = city;
   supplierFromDB.phoneNumber = phoneNumber;
-
+  
   await supplierFromDB.save()
-
+  
   return {
     success: true,
     message: 'Operação realizada com sucesso.',
@@ -99,11 +107,11 @@ const deleteSupplier = async(supplierId) => {
       details: ['Não existe fornecedor cadastrado para o id informado'],
     }
   }
-
+  
   await supplier.deleteOne({
     _id:supplierId
   })
-
+  
   return {
     success: true,
     message: 'Operação realizada com sucesso.',
@@ -151,3 +159,8 @@ module.exports = {
   changeSupplierStatus,
   getProductsBySupplier,
 }
+
+  // console.log('##########__email__##########')
+  // console.log(await isEmailRegistered(email))
+  // console.log('############################')
+  

@@ -19,6 +19,10 @@ module.exports = (Router) => {
           'any.required': `"tradeName" é um campo obrigatório`,
           'string.empty': `"tradeName" não deve ser vazio`,
         }),
+        description: joi.string().required().messages({
+          'any.required': `"description" é um campo obrigatório`,
+          'string.empty': `"description" não deve ser vazio`,
+        }),
         address: joi.string().required().messages({
           'any.required': `"address" é um campo obrigatório`,
           'string.empty': `"address" não deve ser vazio`,
@@ -42,6 +46,10 @@ module.exports = (Router) => {
         password: joi.string().required().messages({
           'any.required': `"password" é um campo obrigatório`,
           'string.empty': `"password" não deve ser vazio`,
+        }),
+        kind: joi.string().required().messages({
+          'any.required': `"kind" é um campo obrigatório`,
+          'string.empty': `"kind" não deve ser vazio`,
         }),
       }),
       supplierController.createSupplierCTRL
@@ -75,6 +83,10 @@ module.exports = (Router) => {
         tradeName: joi.string().required().messages({
           'any.required': `"tradeName" é um campo obrigatório`,
           'string.empty': `"tradeName" não deve ser vazio`,
+        }),
+        description: joi.string().required().messages({
+          'any.required': `"description" é um campo obrigatório`,
+          'string.empty': `"description" não deve ser vazio`,
         }),
         address: joi.string().required().messages({
           'any.required': `"address" é um campo obrigatório`,

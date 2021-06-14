@@ -2,7 +2,48 @@ const { user } = require('../models/index');
 const cryptography = require('../utils/cryptography.utils');
 const userMapper = require('../mappers/user.mapper');
 
-
+const profiles = [
+  {
+    id:'1',
+    description:'admin',
+    actions:[
+      'CREATE_CATEGORY',
+      'EDIT_CATEGORY',
+      'ACTIVATE_CATEGORY',
+      'DEACTIVATE_CATEGORY',
+      'DELETE_CATEGORY',
+      'ACTIVATE_SUPPLIER',
+      'DEACTIVATE_SUPPLIER',
+      'DELETE_PRODUCT',
+      'ACTIVATE_PRODUCT',
+      'DEACTIVATE_PRODUCT',
+      'ACTIVATE_CLIENT',
+      'DEACTIVATE_CLIENT',
+      'DELETE_CLIENT',
+    ]
+  },
+  {
+    id:'2',
+    description:'supplier',
+    actions:[
+      'EDIT_SUPPLIER',
+      'DEACTIVATE_SUPPLIER',
+      'CREATE_PRODUCT',
+      'EDIT_PRODUCT',
+      'ACTIVATE_PRODUCT',
+      'DEACTIVATE_PRODUCT',
+      'DELETE_PRODUCT',
+    ]
+  },
+  {
+    id:'3',
+    description:'client',
+    actions:[
+      'EDIT_CLIENT',
+      'DELETE_CLIENT',
+    ]
+  }
+]
 
 const isEmailRegistered = async (email) => {
   const resultFromDB = await user.find({ email });
@@ -43,9 +84,22 @@ const authUserService = async (email, password) => {
     message: "usuário autenticado com sucesso",
     data: await createCredential(email) 
   }
+};
+
+const findProfileById = async(profileId) => {
+  const result = await profiles.find(item => Number(item.id) === Number(profileId)); 
+  return result; 
+};
+
+const validateProfileActions = (profileId, actions) => {
+  const profile = finsProfileById(profileId);
+  return profile.actions.include(actions)
 }
+
 
 module.exports = {
   authUserService, 
   isEmailRegistered,
+  findProfileById,
+  validateProfileActions,
 }
