@@ -24,13 +24,14 @@ const createCategory = async (model) => {
     name: model.name,
     description: model.description,
     status: model.status,
-    image: {
-      originalName: model.image.originalName,
-      name:model.image.newName,
-      type:model.image.type,
-    }
+    // image: {
+    //   originalName: model.image.originalName,
+    //   name:model.image.newName,
+    //   type:model.image.type,
+    // }
   })
-  fileUtils.move(model.image.originalPath, model.image.newPath);
+
+  // fileUtils.move(model.image.originalPath, model.image.newPath);
   return {
     success: true,
     message: 'cadastro realizados com sucesso',
@@ -49,19 +50,19 @@ const editCategory = async (categoryId, model) => {
     }
   };
 
-  fileUtils.remove('categorias', categoryFromDB.image.name);
+  // fileUtils.remove('categorias', categoryFromDB.image.name);
 
   categoryFromDB.name = model.name;
   categoryFromDB.description = model.description;
   categoryFromDB.status = model.status;
-  categoryFromDB.image = {
-    originalName:model.image.originalName,
-    name:model.image.newName,
-    type:model.image.type,
-  }
+  // categoryFromDB.image = {
+  //   originalName:model.image.originalName,
+  //   name:model.image.newName,
+  //   type:model.image.type,
+  // }
 
   await categoryFromDB.save();
-  fileUtils.move(model.image.originalPath, model.image.newPath);
+  // fileUtils.move(model.image.originalPath, model.image.newPath);
 
   return {
     success: true,
@@ -80,7 +81,7 @@ const deleteCategory = async (categoryId) => {
     }
   };
   // const { image } = categoryFromDB;
-  fileUtils.remove('categorias', categoryFromDB.image.name);
+  // fileUtils.remove('categorias', categoryFromDB.image.name);
 
   await categories.deleteOne({
     _id: categoryId,

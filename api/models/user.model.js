@@ -6,6 +6,10 @@ const userSchema = {
   password: {
     type: String,
     required:true,
+  },
+  kind: {
+    type: String,
+    required:true,
   }
 }
 

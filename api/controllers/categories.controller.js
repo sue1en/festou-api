@@ -10,7 +10,8 @@ module.exports = {
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details:serviceResult.details}
 
-    return res.status(statusCodeReturn).send(dataReturn);
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    });
   },
 
   editCategoriesCTRL: async (req, res, next) => {
@@ -20,7 +21,8 @@ module.exports = {
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details:serviceResult.details}
 
-    return res.status(statusCodeReturn).send(dataReturn);
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    });
   },
 
   deleteCategoriesCTRL: async (req, res, next) => {  
@@ -30,7 +32,8 @@ module.exports = {
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = serviceResult.success ? {message: serviceResult.message} : {details:serviceResult.details}
 
-    return res.status(statusCodeReturn).send(dataReturn); 
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    }); 
   },
 
   getAllCategoriesCTRL: async (req, res, next) => {

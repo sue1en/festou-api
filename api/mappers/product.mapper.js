@@ -22,7 +22,7 @@ const toDTO = (model) => {
     description,
     price: `R$ ${price.toString().replace('.', ',')}`,
     status,
-    image: fileUtils.createDownloadAddress('products', `${image.name}` || ''),
+    // image: fileUtils.createDownloadAddress('products', `${image.name}` || ''),
   }
 }
 

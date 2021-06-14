@@ -10,7 +10,8 @@ module.exports = {
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails}
 
-    return res.status(statusCodeReturn).send(dataReturn)
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    });
   },
 
   editSupplierCTRL: async (req, res, next) => {
@@ -19,7 +20,8 @@ module.exports = {
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails}
 
-    return res.status(statusCodeReturn).send(dataReturn)
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    });
   },
 
   deleteSupplierCTRL: async (req, res, next) => {
@@ -28,7 +30,8 @@ module.exports = {
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {message: serviceResult.message} : {details: serviceResult.datails}
 
-    return res.status(statusCodeReturn).send(dataReturn)
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    }); 
   },
 
   getAllSupplierCTRL: async (req, res, next) => {
@@ -52,7 +55,8 @@ module.exports = {
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails};
 
-    return res.status(statusCodeReturn).send({...dataReturn})
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    });
   },
   
   deactivateSupplierCTRL: async (req, res, next) => {

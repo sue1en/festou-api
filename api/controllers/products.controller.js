@@ -11,9 +11,10 @@ module.exports = {
     });
 
     const statusCodeReturn = serviceResult.success ? 200 : 400;
-    const dataReturn = serviceResult.success ? { data: serviceResult.data } : { default: serviceResult.default };
+    const dataReturn = serviceResult.success ? { data: serviceResult.data } : { details: serviceResult.details };
 
-    return res.status(statusCodeReturn).send(dataReturn);
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    });
   },
 
   editProductCTRL: async ( req, res, next ) => {

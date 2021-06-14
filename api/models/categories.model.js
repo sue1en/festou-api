@@ -14,20 +14,20 @@ const categoriesSchema = {
     type:Boolean,
     require: true,
   },
-  image: {
-    originalName: {
-      type:String,
-      require: false,
-    },
-    name: {
-      type:String,
-      require: false,
-    },
-    type: {
-      type:String,
-      require: false,
-    },
-  },
+  // image: {
+  //   originalName: {
+  //     type:String,
+  //     require: false,
+  //   },
+  //   name: {
+  //     type:String,
+  //     require: false,
+  //   },
+  //   type: {
+  //     type:String,
+  //     require: false,
+  //   },
+  // },
 
   products:[{
     type:Schema.Types.ObjectId,
