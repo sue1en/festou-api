@@ -1,6 +1,7 @@
 const supplierController = require('../../controllers/supplier.controller');
 const productsController = require('../../controllers/products.controller');
 const validateDTO = require('../../utils/middlewares/validate-dto.middleware')
+const authMiddleware = require('../../utils/middlewares/authorization.middleware')
 const joi = require('joi')
 
 module.exports = (Router) => {
@@ -61,7 +62,7 @@ module.exports = (Router) => {
     .route('/supplier/:supplierId')
     .get(
       validateDTO("params", {
-        supplierId: joi.string().required().messages({
+        supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
         }),
@@ -69,8 +70,9 @@ module.exports = (Router) => {
       supplierController.getSupplierByIdCTRL
     )
     .put(
+      authMiddleware.actionAuth('EDIT_SUPPLIER'),
       validateDTO("params", {
-        supplierId: joi.string().required().messages({
+        supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
         }),
@@ -110,10 +112,11 @@ module.exports = (Router) => {
     
   //deleta
   Router
-    .route('/supplier/:supplierId')
+    .route('/supplier/:supplierId/delete')
     .delete(
+      authMiddleware.actionAuth('DELETE_SUPPLIER'),
       validateDTO("params", {
-        supplierId: joi.string().required().messages({
+        supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
         }),
@@ -124,8 +127,9 @@ module.exports = (Router) => {
   Router
   .route('/supplier/:supplierId/ativa')
   .put(
+    authMiddleware.actionAuth('ACTIVATE_SUPPLIER'),
     validateDTO("params", {
-      supplierId: joi.string().required().messages({
+      supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
         'any.required': `"supplierId" é um campo obrigatório`,
         'string.empty': `"supplierId" não deve ser vazio`,
       }),
@@ -136,8 +140,9 @@ module.exports = (Router) => {
   Router
     .route('/supplier/:supplierId/inativa')
     .put(
+      authMiddleware.actionAuth('DEACTIVATE_SUPPLIER'),
       validateDTO("params", {
-        supplierId: joi.string().required().messages({
+        supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
         }),
@@ -158,6 +163,7 @@ module.exports = (Router) => {
       supplierController.getProductsBySupplierCTRL
     )
     .post(
+      authMiddleware.actionAuth('DELETE_PRODUCT'),
       validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,

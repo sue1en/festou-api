@@ -20,6 +20,8 @@ const profiles = [
       'ACTIVATE_CLIENT',
       'DEACTIVATE_CLIENT',
       'DELETE_CLIENT',
+      'GET_ALL_CLIENTS',
+      'GET_BY_ID_CLIENT',
     ]
   },
   {
@@ -33,6 +35,7 @@ const profiles = [
       'ACTIVATE_PRODUCT',
       'DEACTIVATE_PRODUCT',
       'DELETE_PRODUCT',
+      'GET_BY_ID_CLIENT',
     ]
   },
   {
@@ -41,6 +44,7 @@ const profiles = [
     actions:[
       'EDIT_CLIENT',
       'DELETE_CLIENT',
+      'GET_BY_ID_CLIENT',
     ]
   }
 ]
@@ -87,13 +91,13 @@ const authUserService = async (email, password) => {
 };
 
 const findProfileById = async(profileId) => {
-  const result = await profiles.find(item => Number(item.id) === Number(profileId)); 
+  const result = await profiles.find(item => Number(item.id) === Number(profileId));
   return result; 
 };
 
-const validateProfileActions = (profileId, actions) => {
-  const profile = finsProfileById(profileId);
-  return profile.actions.include(actions)
+const validateProfileActions = async (profileId, actions) => {
+  const profile = await findProfileById(profileId);
+  return profile.actions.includes(actions);
 }
 
 

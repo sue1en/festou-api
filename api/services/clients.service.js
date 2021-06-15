@@ -4,7 +4,7 @@ const { createHash } = require('../utils/cryptography.utils');
 const { isEmailRegistered } = require('../services/user.service');
 
 const crateClient = async (model) => {
-  const  {email, password, ...content } = model;
+  const  {email, password, kind, ...content } = model;
 
   if(await isEmailRegistered(email)){
     return {
@@ -16,8 +16,9 @@ const crateClient = async (model) => {
   const newClient = await clients.create({
     email,
     password: createHash(password),
+    kind: 'client',
     ...content,
-    status: 'em análise'
+    status: true
   });
 
   return {
@@ -94,9 +95,47 @@ const getClientsById = async (clientId) => {
   }
 }
 
+const deleteCliente = async (clientId) => {
+  const clientsFromDB = await clients.findById(clientId);
+  if(!clientsFromDB){
+    return {
+      success: false,
+      message: 'Não foi possível realizar operação',
+      details: ['Não há cliente cadastrado com o id informado']
+    }
+  };
+
+  await clientsFromDB.deleteOne({ _id:clientId })
+  return {
+    success:true,
+    message: 'Operação realizada com sucesso.',
+    data: {...toDTO(clientsFromDB)}
+  }
+}
+
+const changeClientStatus = async(clientId, status) => {
+  const clientsFromDB = await clients.findById(clientId);
+  if(!clientsFromDB){
+    return {
+      success: false,
+      message: 'Não foi possível realizar operação',
+      details: ['Não há cliente cadastrado com o id informado']
+    }
+  };
+  clientsFromDB.status = status;
+  await clientsFromDB.save()
+  return {
+    success:true,
+    message: 'Operação realizada com sucesso.',
+    data: {...toDTO(clientsFromDB.toJSON())}
+  }
+}
+
 module.exports = {
   crateClient,
   editClient,
   getAllClients,
   getClientsById,
+  deleteCliente,
+  changeClientStatus,
 }

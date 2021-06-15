@@ -6,9 +6,9 @@ module.exports = {
     const { body } = req
 
     const serviceResult = await supplierService.createSupllier(body);
-    
+    console.log(serviceResult)
     const statusCodeReturn = serviceResult.success ? 200 : 400;
-    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails}
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.details}
 
     return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
     });
@@ -18,7 +18,7 @@ module.exports = {
     const { params, body } = req
     const serviceResult = await supplierService.editSupplier(params.supplierId, body);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
-    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails}
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.details}
 
     return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
     });
@@ -28,7 +28,7 @@ module.exports = {
     const { params } = req
     const serviceResult = await supplierService.deleteSupplier(params.supplierId);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
-    const dataReturn = serviceResult.success ? {message: serviceResult.message} : {details: serviceResult.datails}
+    const dataReturn = serviceResult.success ? {message: serviceResult.message} : {details: serviceResult.details}
 
     return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
     }); 

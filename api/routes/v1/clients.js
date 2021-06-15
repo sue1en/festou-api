@@ -1,12 +1,15 @@
 const clientsController = require('../../controllers/clients.controller');
 const joi = require('joi');
 const validateDTO = require('../../utils/middlewares/validate-dto.middleware');
+const authMiddleware = require('../../utils/middlewares/authorization.middleware')
 
 module.exports = (Router) => {
-
+  
   Router
     .route('/clients')
-    .get(clientsController.getAllClientsCTRL)
+    .get(
+      authMiddleware.actionAuth('GET_ALL_CLIENTS'),
+      clientsController.getAllClientsCTRL)
     .post(
       validateDTO("body", {
         name: joi.string().required().messages({
@@ -48,8 +51,9 @@ module.exports = (Router) => {
   Router
     .route('/clients/:clientId')
     .get(
+      authMiddleware.actionAuth('GET_BY_ID_CLIENT'),
       validateDTO("params", {
-        clientId: joi.string().required().messages({
+        clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,
           'string.empty': `"clientId" não deve ser vazio`,
         }),  
@@ -57,8 +61,9 @@ module.exports = (Router) => {
       clientsController.getClientsByIdCTRL
     )
     .put(
+      authMiddleware.actionAuth('EDIT_CLIENT'),
       validateDTO("params", {
-        clientId: joi.string().required().messages({
+        clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,
           'string.empty': `"clientId" não deve ser vazio`,
         }),  
@@ -90,5 +95,44 @@ module.exports = (Router) => {
         }),
       }),
       clientsController.editClientsCTRL
+    )
+  
+  Router
+    .route('/clients/:clientId/delete')
+    .delete(
+      authMiddleware.actionAuth('DELETE_CLIENT'),
+      validateDTO("params", {
+        clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+          'any.required': `"clientId" é um campo obrigatório`,
+          'string.empty': `"clientId" não deve ser vazio`,
+        }),  
+      }),
+      clientsController.deleteClientsCTRL
+    )
+  
+    Router
+  .route('/clients/:clientId/ativa')
+  .put(
+    authMiddleware.actionAuth('ACTIVATE_CLIENT'),
+    validateDTO("params", {
+      clientsId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+        'any.required': `"clientsId" é um campo obrigatório`,
+        'string.empty': `"clientsId" não deve ser vazio`,
+      }),
+    }), 
+    clientsController.activateClientCTRL
+    )
+    
+  Router
+    .route('/clients/:clientId/inativa')
+    .put(
+      authMiddleware.actionAuth('DEACTIVATE_CLIENT'),
+      validateDTO("params", {
+        clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+          'any.required': `"clientId" é um campo obrigatório`,
+          'string.empty': `"clientId" não deve ser vazio`,
+        }),
+      }), 
+      clientsController.deactivateClientCTRL
     )
 }

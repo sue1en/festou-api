@@ -11,7 +11,7 @@ const isCnpjRegistered = async (cnpj) =>{
 };
 
 const createSupllier = async(model) => {
-  const { email, cnpj, password, ...content} = model;
+  const { email, cnpj, password, kind, ...content} = model;
   if(await isEmailRegistered(email)){
     return{
       success: false,
@@ -33,15 +33,14 @@ const createSupllier = async(model) => {
     cnpj,
     ...content,
     password: createHash(password),
+    kind:'supplier',
     status: 'Em analise'
   });
   
   return {
     success: true,
     message: 'Operação realizada com sucesso.',
-    data:{
-      ...toListItemDTO(newSupplier)
-    } 
+    data:{ ...toListItemDTO(newSupplier)} 
   }
 };
 
@@ -50,11 +49,11 @@ const getAllSupllier = async () => {
   return supplierFromDB.map(supplierDB => {
     return toListItemDTO(supplierDB);
   });
+
 }
 
 const getSupllierById = async(supplierId) => {
   const supplierFromDB = await supplier.findById(supplierId)
-  console.log(supplierFromDB.id === supplierId ? true : false)
   
   if(supplierFromDB){
     return toListItemDTO(supplierFromDB);
@@ -114,7 +113,7 @@ const deleteSupplier = async(supplierId) => {
   
   return {
     success: true,
-    message: 'Operação realizada com sucesso.',
+    message: 'Operação realizada com sucesso.'
   }
 };
 

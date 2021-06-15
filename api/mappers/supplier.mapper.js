@@ -1,12 +1,13 @@
 // retorna algumas coisas
 const toListItemDTO = (model) => {
-  const { _id, email, cnpj, tradeName, kind, status } = model;
+  const { _id, email, cnpj, tradeName, description, kind, status } = model;
 
   return {
     id: _id,
     email,
     cnpj,
     tradeName,
+    description,
     kind,
     // image: fileUtils.createDownloadAddress('supplier', `${image.name}` || ''),
     status,

@@ -24,8 +24,16 @@ module.exports = {
     return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
     });
   },
-
+  
   deleteClientsCTRL: async (req, res, next ) => {
+    const { params } = req;
+  
+    const serviceResult = await clientsService.deleteCliente(params.clientId);
+    const statusCodeReturn = serviceResult.success ? 200 : 400;
+    const dataReturn = serviceResult.success ? ({data: serviceResult.data}) : ({details: serviceResult.details});
+  
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    });
 
   },
 
@@ -37,6 +45,26 @@ module.exports = {
   getClientsByIdCTRL: async (req, res, next ) => {
     const { params } = req;
     const serviceResult = await clientsService.getClientsById(params.clientId);
+    const statusCodeReturn = serviceResult.success ? 200 : 400;
+    const dataReturn = serviceResult.success ? ({data: serviceResult.data}) : ({details: serviceResult.details});
+
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    });
+  },
+
+  activateClientCTRL: async (req, res, next ) => {
+    const { params } = req;
+    const serviceResult = await clientsService.changeClientStatus(params.clientId);
+    const statusCodeReturn = serviceResult.success ? 200 : 400;
+    const dataReturn = serviceResult.success ? ({data: serviceResult.data}) : ({details: serviceResult.details});
+
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    });
+  },
+
+  deactivateClientCTRL: async (req, res, next ) => {
+    const { params } = req;
+    const serviceResult = await clientsService.changeClientStatus(params.clientId);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? ({data: serviceResult.data}) : ({details: serviceResult.details});
 
