@@ -33,8 +33,8 @@ const createProduct = async (model) => {
     name:model.name,
     description:model.description,
     price:model.price,
-    categories: model.categories,
-    supplier: model.supplier,
+    categories: model.categoriesId,
+    supplier: model.supplierId,
     // image: {
     //   originalName:model.image.originalName,
     //   name:model.image.newName,
@@ -83,9 +83,146 @@ const findByFilter = async () => {
 
 }
 
+const editProduct = async ({ productId, supplierId, userId, model }) => {
+  const [ productFromDB, supplierFromDB ] = await Promise.all([
+    products.findById(productId),
+    supplier.findById(supplierId),
+  ]);
+
+  if(!supplierFromDB){
+    return {
+      success: false,
+      message: 'Operação não realizada.',
+      details: [
+        'Fornecedor informado não existe.'
+      ],
+    };
+  }
+  if(supplierId !== userId){
+    return {
+      success: false,
+      message: 'Operação não realizada.',
+      details: [
+        'Produto não pertence ao fornecedor informado.'
+      ],
+    };
+  }
+  if(!productFromDB){
+    return {
+      success: false,
+      message: 'Operação não pode ser realizada.',
+      details:[
+        'Não existe produto cadastrado para o id informado.'
+      ],
+    }
+  };
+  if(productId !== productFromDB.id){
+    return {
+      success: false,
+      message: 'Operação não realizada.',
+      details: [
+        'id do Produto é diferente do produto informado.'
+      ],
+    };
+  }
+  
+  if(productFromDB.supplier.toString() !== supplierId){
+    return {
+      success: false,
+      message: 'Operação não pode ser realizada.',
+      details:[
+        'Fornecedor informado não é válido.'
+      ],
+    }
+  };
+  
+  const { name, description, price } = model
+
+  productFromDB.name = name
+  productFromDB.description = description
+  productFromDB.price = price
+
+  await productFromDB.save()
+
+  return {
+    success: true,
+    message: 'Operação realizada com sucesso.',
+    data: {...toDTO(productFromDB)}
+  }
+};
+
+const deleteProduct = async ({ productId, supplierId, userId }) => {
+  const [ productFromDB, supplierFromDB ] = await Promise.all([
+    products.findById(productId),
+    supplier.findById(supplierId),
+  ]);
+
+  if(!supplierFromDB){
+    return {
+      success: false,
+      message: 'Operação não realizada.',
+      details: [
+        'Fornecedor informado não existe.'
+      ],
+    };
+  }
+  if(supplierId !== userId){
+    return {
+      success: false,
+      message: 'Operação não realizada.',
+      details: [
+        'Produto não pertence ao fornecedor informado.'
+      ],
+    };
+  }
+  if(!productFromDB){
+    return {
+      success: false,
+      message: 'Operação não pode ser realizada.',
+      details:[
+        'Não existe produto cadastrado para o id informado.'
+      ],
+    }
+  };
+  
+  if(productFromDB.supplier.toString() !== supplierId){
+    return {
+      success: false,
+      message: 'Operação não pode ser realizada.',
+      details:[
+        'Fornecedor informado não é válido.'
+      ],
+    }
+  };
+
+  const categoryFromDB = await categories.findById(productFromDB.categories);
+  categoryFromDB.products = categoryFromDB.products.filter(item => {
+    return item.toString() !== productId
+  });
+  supplierFromDB.products = supplierFromDB.products.filter(item => {
+    return item.toString() !== productId
+  });
+
+  await Promise.all([
+    categoryFromDB.save(),
+    supplierFromDB.save(),
+    products.deleteOne(productFromDB)
+  ])
+
+  return {
+    success: true,
+    message: 'Operação realiada com sucesso',
+    data: {
+      id: productId,
+      name: productFromDB.name
+    }
+  } 
+};
 
 module.exports = {
   createProduct,
   getAllProduct,
   getProductById,
+  editProduct,
+  deleteProduct,
 }

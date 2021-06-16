@@ -148,7 +148,6 @@ const getProductsBySupplier = async (supplierId) => {
   })
 };
 
-
 module.exports = {
   createSupllier,
   getAllSupllier,

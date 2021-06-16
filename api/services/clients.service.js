@@ -39,13 +39,13 @@ const editClient = async (clientId, model) => {
       details: ['Não há cliente cadastrado com o id informado']
     }
   };
-  // if(clientsFromDB.id !== clientId ){
-  //   return {
-  //     success: false,
-  //     message: 'Operação não permitida',
-  //     details: ['Id informado não pertence ao usuário']
-  //   }
-  // };
+  if(clientsFromDB.id !== clientId ){
+    return {
+      success: false,
+      message: 'Operação não permitida',
+      details: ['Id informado não pertence ao usuário']
+    }
+  };
   
   const { name, birthdate, address, state, city, phoneNumber } = model;
 
@@ -104,12 +104,22 @@ const deleteCliente = async (clientId) => {
       details: ['Não há cliente cadastrado com o id informado']
     }
   };
+  if(clientsFromDB.id !== clientId ){
+    return {
+      success: false,
+      message: 'Operação não permitida',
+      details: ['Id informado não pertence ao usuário']
+    }
+  };
 
   await clientsFromDB.deleteOne({ _id:clientId })
   return {
     success:true,
     message: 'Operação realizada com sucesso.',
-    data: {...toDTO(clientsFromDB)}
+    data: {
+      id: clientId,
+      name: clientsFromDB.name
+    }
   }
 }
 

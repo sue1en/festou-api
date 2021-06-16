@@ -25,9 +25,9 @@ const manageUserType = (type) => {
 // }
 
 const toUserDTO = (model) => {
-  const { id, email, kind } = model;
+  const { _id, email, kind } = model;
   return {
-    id,
+    id: _id,
     email,
     kind: manageUserType(kind),
   }

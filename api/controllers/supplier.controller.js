@@ -6,7 +6,6 @@ module.exports = {
     const { body } = req
 
     const serviceResult = await supplierService.createSupllier(body);
-    console.log(serviceResult)
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.details}
 

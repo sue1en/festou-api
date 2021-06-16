@@ -48,10 +48,6 @@ module.exports = (Router) => {
           'any.required': `"password" é um campo obrigatório`,
           'string.empty': `"password" não deve ser vazio`,
         }),
-        kind: joi.string().required().messages({
-          'any.required': `"kind" é um campo obrigatório`,
-          'string.empty': `"kind" não deve ser vazio`,
-        }),
       }),
       supplierController.createSupplierCTRL
     )
@@ -163,7 +159,7 @@ module.exports = (Router) => {
       supplierController.getProductsBySupplierCTRL
     )
     .post(
-      authMiddleware.actionAuth('DELETE_PRODUCT'),
+      authMiddleware.actionAuth('CREATE_PRODUCT'),
       validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
@@ -192,6 +188,50 @@ module.exports = (Router) => {
     }),
     productsController.CreateProductCTRL
   )
-
+  
+  Router
+    .route('/supplier/:supplierId/products/:productId')
+    .put(
+      authMiddleware.actionAuth('EDIT_PRODUCT'),
+      validateDTO('params', {
+        supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+          'any.required': `"supplierId" é um campo obrigatório`,
+          'string.empty': `"supplierId" não deve ser vazio`,
+        }),
+        productId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+          'any.required': `"productId" é um campo obrigatório`,
+          'string.empty': `"productId" não deve ser vazio`,
+        })
+      }),
+      validateDTO('body', {
+        name: joi.string().required().messages({
+          'any.required': `"name" é um campo obrigatório`,
+          'string.empty': `"name" não deve ser vazio`,
+        }),
+        description: joi.string().required().messages({
+          'any.required': `"description" é um campo obrigatório`,
+          'string.empty': `"description" não deve ser vazio`,
+        }),
+        price: joi.number().required().messages({
+          'any.required': `"price" é um campo obrigatório`,
+          'string.empty': `"price" não deve ser vazio`,
+        }),
+      }),
+      productsController.editProductCTRL
+    )
+    .delete(
+      authMiddleware.actionAuth('DELETE_PRODUCT'),
+      validateDTO('params', {
+        supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+          'any.required': `"supplierId" é um campo obrigatório`,
+          'string.empty': `"supplierId" não deve ser vazio`,
+        }),
+        productId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+          'any.required': `"productId" é um campo obrigatório`,
+          'string.empty': `"productId" não deve ser vazio`,
+        })
+      }),
+      productsController.deleteProductCTRL
+    )
 
 }

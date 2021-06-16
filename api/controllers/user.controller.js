@@ -9,9 +9,7 @@ module.exports = {
     const serviceResult = await userService.authUserService(email, password);
     const statusCodeReturn = serviceResult.success ? 200 : 401;
     const dataReturn = serviceResult.success ? { data:serviceResult.data} : {details:serviceResult.details};
-    
-    // console.log(statusCodeReturn)
-    console.log(dataReturn)
+  
     return res.status(statusCodeReturn).send({message:serviceResult.message,
     ...dataReturn
     });
