@@ -1,4 +1,5 @@
 const supplierController = require('../../controllers/supplier.controller');
+const fileUploadMiddleware = require('../../utils/middlewares/file-upload.middleware');
 const productsController = require('../../controllers/products.controller');
 const validateDTO = require('../../utils/middlewares/validate-dto.middleware')
 const authMiddleware = require('../../utils/middlewares/authorization.middleware')
@@ -11,6 +12,7 @@ module.exports = (Router) => {
     .route('/supplier')
     .get(supplierController.getAllSupplierCTRL)
     .post(
+      fileUploadMiddleware('supplier'),
       validateDTO("body", {
         cnpj: joi.number().required().messages({
           'any.required': `"cnpj" é um campo obrigatório`,
@@ -48,6 +50,8 @@ module.exports = (Router) => {
           'any.required': `"password" é um campo obrigatório`,
           'string.empty': `"password" não deve ser vazio`,
         }),
+      }, {
+        allowUnknown: true,
       }),
       supplierController.createSupplierCTRL
     )
@@ -67,6 +71,7 @@ module.exports = (Router) => {
     )
     .put(
       authMiddleware.actionAuth('EDIT_SUPPLIER'),
+      fileUploadMiddleware('supplier'),
       validateDTO("params", {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
@@ -102,6 +107,8 @@ module.exports = (Router) => {
           'any.required': `"phoneNumber" é um campo obrigatório`,
           'string.empty': `"phoneNumber" não deve ser vazio`,
         }),
+      }, {
+        allowUnknown: true,
       }),
       supplierController.editSupplierCTRL
     )

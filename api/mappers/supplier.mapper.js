@@ -1,6 +1,8 @@
+const fileUtils = require('../utils/file.utils');
+
 // retorna algumas coisas
 const toListItemDTO = (model) => {
-  const { _id, email, cnpj, tradeName, description, kind, status } = model;
+  const { _id, email, cnpj, tradeName, description, kind, image, status } = model;
 
   return {
     id: _id,
@@ -9,7 +11,7 @@ const toListItemDTO = (model) => {
     tradeName,
     description,
     kind,
-    // image: fileUtils.createDownloadAddress('supplier', `${image.name}` || ''),
+    image: fileUtils.createDownloadAddress('supplier', `${image.name}` || ''),
     status,
   }
 }
