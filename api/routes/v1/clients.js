@@ -1,4 +1,5 @@
 const clientsController = require('../../controllers/clients.controller');
+const fileUploadMiddleware = require('../../utils/middlewares/file-upload.middleware');
 const joi = require('joi');
 const validateDTO = require('../../utils/middlewares/validate-dto.middleware');
 const authMiddleware = require('../../utils/middlewares/authorization.middleware')
@@ -11,6 +12,7 @@ module.exports = (Router) => {
       authMiddleware.actionAuth('GET_ALL_CLIENTS'),
       clientsController.getAllClientsCTRL)
     .post(
+      fileUploadMiddleware('clients'),
       validateDTO("body", {
         name: joi.string().required().messages({
           'any.required': `"name" é um campo obrigatório`,
@@ -44,6 +46,8 @@ module.exports = (Router) => {
           'any.required': `"password" é um campo obrigatório`,
           'string.empty': `"password" não deve ser vazio`,
         }),
+      }, {
+        allowUnknown: true,
       }),
       clientsController.createClientsCTRL
     )
@@ -62,6 +66,7 @@ module.exports = (Router) => {
     )
     .put(
       authMiddleware.actionAuth('EDIT_CLIENT'),
+      fileUploadMiddleware('clients'),
       validateDTO("params", {
         clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,
@@ -93,6 +98,8 @@ module.exports = (Router) => {
           'any.required': `"phoneNumber" é um campo obrigatório`,
           'string.empty': `"phoneNumber" não deve ser vazio`,
         }),
+      }, {
+        allowUnknown: true,
       }),
       clientsController.editClientsCTRL
     )

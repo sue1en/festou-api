@@ -18,10 +18,11 @@ const toListItemDTO = (model) => {
 
 // retorna tudo
 const toDTO = (model) => {
-  const { _id, password, cratedAt, udatedAt, __v, kind, products, ...content } = model
+  const { _id, password, cratedAt, udatedAt, __v, kind, products, image, ...content } = model
 
   return {
     id: _id,
+    image: fileUtils.createDownloadAddress('supplier', `${image.name}` || ''),
     ...content,  
   }
 }

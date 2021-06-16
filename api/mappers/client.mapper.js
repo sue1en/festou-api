@@ -1,5 +1,7 @@
+const fileUtils = require('../utils/file.utils');
+
 const toListItemDTO = (model) => {
-  const { _id, name, birthdate, address, city, state,  phoneNumber, kind, status } = model;
+  const { _id, name, birthdate, address, city, state,  phoneNumber, kind, status, image } = model;
 
   return {
     id: _id,
@@ -11,12 +13,12 @@ const toListItemDTO = (model) => {
     phoneNumber,
     kind,
     status,
-    // image: fileUtils.createDownloadAddress('clients', `${image.name}` || ''),
+    image: fileUtils.createDownloadAddress('clients', `${image.name}` || ''),
   }
 }
 
 const toDTO = (model) => {
-  const { _id, email, name, kind, status } = model;
+  const { _id, email, name, kind, status, image } = model;
 
   return {
     id: _id,
@@ -24,7 +26,7 @@ const toDTO = (model) => {
     name,
     kind,
     status,
-    // image: fileUtils.createDownloadAddress('clients', `${image.name}` || ''),
+    image: fileUtils.createDownloadAddress('clients', `${image.name}` || ''),
   }
 }
 
