@@ -10,7 +10,7 @@ module.exports = (Router) => {
     .get(categoriesController.getAllCategoriesCTRL)
     .post(
       fileUploadMiddleware('categorias'),
-      authMiddleware.actionAuth('CREATE_CATEGORY'),
+      // authMiddleware.actionAuth('CREATE_CATEGORY'),
       validateDTO("body", {
         name: joi.string().required().messages({
           'any.required': `"nome" é um campo obrigatório`,
