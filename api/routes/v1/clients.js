@@ -26,9 +26,9 @@ module.exports = (Router) => {
           'any.required': `"address" é um campo obrigatório`,
           'string.empty': `"address" não deve ser vazio`,
         }),
-        state: joi.string().required().messages({
-          'any.required': `"state" é um campo obrigatório`,
-          'string.empty': `"state" não deve ser vazio`,
+        uf: joi.string().required().messages({
+          'any.required': `"uf" é um campo obrigatório`,
+          'string.empty': `"uf" não deve ser vazio`,
         }),
         city: joi.string().required().messages({
           'any.required': `"city" é um campo obrigatório`,
@@ -86,9 +86,9 @@ module.exports = (Router) => {
           'any.required': `"address" é um campo obrigatório`,
           'string.empty': `"address" não deve ser vazio`,
         }),
-        state: joi.string().required().messages({
-          'any.required': `"state" é um campo obrigatório`,
-          'string.empty': `"state" não deve ser vazio`,
+        uf: joi.string().required().messages({
+          'any.required': `"uf" é um campo obrigatório`,
+          'string.empty': `"uf" não deve ser vazio`,
         }),
         city: joi.string().required().messages({
           'any.required': `"city" é um campo obrigatório`,

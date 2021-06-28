@@ -18,7 +18,7 @@ const supplierSchema = {
     type: String,
     required: true,
   },
-  state: {
+  uf: {
     type: String,
     required: true,
   },
