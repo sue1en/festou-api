@@ -81,8 +81,8 @@ const editClient = async (clientId, model) => {
 }
 
 
-const getAllClients = async (model) => {
-  const clientsFromDB = await clients.find()
+const getAllClients = async () => {
+  const clientsFromDB = await clients.find({kind:'client'})
   if(!clientsFromDB){
     return {
       success: false,

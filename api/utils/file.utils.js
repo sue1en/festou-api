@@ -24,8 +24,9 @@ const move = (temporario, definitivo) => {
 
 const remove = (origem, arquivo) => {
   const fileAddress = createAddress(origem, arquivo)
-  if(fs.existsSync(fileAddress))
+  if(fs.existsSync(fileAddress)){
     fs.unlinkSync(fileAddress); 
+  }
   return
 }
 

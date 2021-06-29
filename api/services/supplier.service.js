@@ -50,7 +50,7 @@ const createSupllier = async(model) => {
 };
 
 const getAllSupllier = async () => {
-  const supplierFromDB = await supplier.find();
+  const supplierFromDB = await supplier.find({kind:'supplier'});
   return supplierFromDB.map(supplierDB => {
     return toListItemDTO(supplierDB);
   });

@@ -52,19 +52,20 @@ const editCategory = async (categoryId, model) => {
     }
   };
 
-  fileUtils.remove('categorias', categoryFromDB.image.name);
-
+  
   categoryFromDB.name = model.name;
   categoryFromDB.description = model.description;
   categoryFromDB.status = model.status;
-  categoryFromDB.image = {
-    originalName:model.image.originalName,
-    name:model.image.newName,
-    type:model.image.type,
+  if(typeof model.image === 'object'){
+    fileUtils.remove('categorias', categoryFromDB.image.name);
+    categoryFromDB.image = {
+      originalName:model.image.originalName,
+      name:model.image.newName,
+      type:model.image.type,
+    }
+    fileUtils.move(model.image.originalPath, model.image.newPath);
   }
-
   await categoryFromDB.save();
-  fileUtils.move(model.image.originalPath, model.image.newPath);
 
   return {
     success: true,

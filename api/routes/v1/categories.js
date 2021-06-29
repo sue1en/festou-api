@@ -51,7 +51,7 @@ module.exports = (Router) => {
     )
     .put(
       // authMiddleware.actionAuth('CREATE_CATEGORY'),
-      fileUploadMiddleware('categorias'),
+      fileUploadMiddleware('categorias', true),
       validateDTO("params", {
         categoryId: joi.string().required().messages({
           'any.required': `"categoryId" é um campo obrigatório`,
