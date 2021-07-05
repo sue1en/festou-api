@@ -35,11 +35,11 @@ const createProduct = async (model) => {
     price:model.price,
     categories: model.categoriesId,
     supplier: model.supplierId,
-    // image: {
-    //   originalName:model.image.originalName,
-    //   name:model.image.newName,
-    //   type:model.image.type
-    // },
+    image: {
+      originalName:model.image.originalName,
+      name:model.image.newName,
+      type:model.image.type
+    },
   });
 
   categoriesDB.products = [...categoriesDB.products, newProduct._id];
@@ -50,22 +50,19 @@ const createProduct = async (model) => {
     supplierDB.save(),
   ]);
 
-  // fileUtils.move(model.image.originalPath, model.image.newPath);
+  fileUtils.move(model.image.originalPath, model.image.newPath);
 
   return {
     success: true,
     message: 'Cadastro realizado com sucesso.',
-    data: {
-      id: newProduct._id,
-      name: newProduct.name,
-    }
+    data: { ...toListItemDTO(newProduct)} 
   }
 };
 
 const getAllProduct = async () => {
   const productsFromDB = await products.find();
   return productsFromDB.map(productsDB => {
-    return toListItemDTO(productsDB)
+    return toDTO(productsDB)
   });
 };
 
@@ -73,7 +70,7 @@ const getAllProduct = async () => {
 const getProductById = async (productId) => {
   const productsFromDB = await products.findById(productId);
   if(productsFromDB){
-    return toListItemDTO(productsFromDB)
+    return toDTO(productsFromDB)
   }
   return 
 }
@@ -116,15 +113,6 @@ const editProduct = async ({ productId, supplierId, userId, model }) => {
       ],
     }
   };
-  if(productId !== productFromDB.id){
-    return {
-      success: false,
-      message: 'Operação não realizada.',
-      details: [
-        'id do Produto é diferente do produto informado.'
-      ],
-    };
-  }
   
   if(productFromDB.supplier.toString() !== supplierId){
     return {
@@ -136,14 +124,24 @@ const editProduct = async ({ productId, supplierId, userId, model }) => {
     }
   };
   
-  const { name, description, price } = model
+  const { name, description, price, state, image } = model
 
   productFromDB.name = name
   productFromDB.description = description
   productFromDB.price = price
+  productFromDB.state = state
+
+  if(typeof image === 'object'){
+    fileUtils.remove('products', productFromDB.image.name);
+    fileUtils.move(image.originalPath, image.newPath);
+    productFromDB.image = {
+      originalName:image.originalName,
+      name:image.newName,
+      type:image.type,
+    }
+  }
 
   await productFromDB.save()
-
   return {
     success: true,
     message: 'Operação realizada com sucesso.',
@@ -202,6 +200,9 @@ const deleteProduct = async ({ productId, supplierId, userId }) => {
   supplierFromDB.products = supplierFromDB.products.filter(item => {
     return item.toString() !== productId
   });
+
+  const { image } = productFromDB;
+  fileUtils.remove('products', image.name);
 
   await Promise.all([
     categoryFromDB.save(),

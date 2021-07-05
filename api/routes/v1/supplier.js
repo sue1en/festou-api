@@ -166,6 +166,7 @@ module.exports = (Router) => {
       supplierController.getProductsBySupplierCTRL
     )
     .post(
+      fileUploadMiddleware('products'),
       authMiddleware.actionAuth('CREATE_PRODUCT'),
       validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
@@ -186,6 +187,10 @@ module.exports = (Router) => {
         'any.required': `"price" é um campo obrigatório`,
         'string.empty': `"price" não deve ser vazio`,
       }),
+      // status: joi.boolean().required().messages({
+      //   'any.required': `"status" é um campo obrigatório`,
+      //   'booleam.empty': `"status" não deve ser vazio`,
+      // }),
       categoriesId: joi.string().required().messages({
         'any.required': `"categoriesId" é um campo obrigatório`,
         'string.empty': `"categoriesId" não deve ser vazio`,
@@ -199,6 +204,7 @@ module.exports = (Router) => {
   Router
     .route('/supplier/:supplierId/products/:productId')
     .put(
+      fileUploadMiddleware('products', true),
       authMiddleware.actionAuth('EDIT_PRODUCT'),
       validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
@@ -223,6 +229,16 @@ module.exports = (Router) => {
           'any.required': `"price" é um campo obrigatório`,
           'string.empty': `"price" não deve ser vazio`,
         }),
+        // status: joi.boolean().required().messages({
+        //   'any.required': `"status" é um campo obrigatório`,
+        //   'booleam.empty': `"status" não deve ser vazio`,
+        // }),
+        categoriesId: joi.string().required().messages({
+          'any.required': `"categoriesId" é um campo obrigatório`,
+          'string.empty': `"categoriesId" não deve ser vazio`,
+        }),
+      }, {
+        allowUnknown: true,
       }),
       productsController.editProductCTRL
     )

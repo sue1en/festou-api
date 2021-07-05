@@ -2,19 +2,20 @@ const fileUtils = require('../utils/file.utils');
 
 
 const toListItemDTO = (model) => {
-  const { _id, name, price, status } = model;
+  const { _id, name, price, status, image, categories } = model;
 
   return {
     id: _id,
     name,
     price: `R$ ${price.toString().replace('.', ',')}`,
     status,
-    // image: fileUtils.createDownloadAddress('products', `${image.name}` || ''),
+    image: fileUtils.createDownloadAddress('products', `${image.name}` || ''),
+    categories,
   }
 }
 
 const toDTO = (model) => {
-  const { _id, name, description, price, status, image } = model
+  const { _id, name, description, price, status, image, categories, supplier } = model
 
   return {
     id: _id,
@@ -22,7 +23,9 @@ const toDTO = (model) => {
     description,
     price: `R$ ${price.toString().replace('.', ',')}`,
     status,
-    // image: fileUtils.createDownloadAddress('products', `${image.name}` || ''),
+    image: fileUtils.createDownloadAddress('products', `${image.name}` || ''),
+    categories,
+    supplier,
   }
 }
 
