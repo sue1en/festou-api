@@ -18,20 +18,20 @@ const productsSchema = {
     type:Boolean,
     require: true,
   },
-  // image: {
-  //   originalName: {
-  //     type:String,
-  //     require: false,
-  //   },
-  //   name: {
-  //     type:String,
-  //     require: false,
-  //   },
-  //   type: {
-  //     type:String,
-  //     require: false,
-  //   },
-  // },
+  image: {
+    originalName: {
+      type:String,
+      require: false,
+    },
+    name: {
+      type:String,
+      require: false,
+    },
+    type: {
+      type:String,
+      require: false,
+    },
+  },
 
   categories:{
     type: Schema.Types.ObjectId,

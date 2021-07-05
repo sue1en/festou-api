@@ -23,19 +23,16 @@ const fileUpload = (destino, isUpdate = false) => {
           ]
         });
       }
-
-      if(files.image) {
+      if(files.image && files.image.name) {
         const newName = fileUtils.createName(files.image.type);
         const newPath = fileUtils.createAddress(destino, newName);
   
         req.body.image = {
-          image: {
-            type: files.image.type,
-            originalName: files.image.name,
-            originalPath: files.image.path,
-            newName,
-            newPath,
-          }
+          type: files.image.type,
+          originalName: files.image.name,
+          originalPath: files.image.path,
+          newName,
+          newPath,
         }
       }
       return next();

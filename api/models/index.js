@@ -7,6 +7,7 @@ const createSchema = (mainModel, model, options = {}) => {
     ...model,
   }, {
     timestamps: true,
+    versionKey: false,
     collection: 'UsersCollection',
     ...options,
   })

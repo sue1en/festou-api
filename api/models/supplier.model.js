@@ -18,7 +18,7 @@ const supplierSchema = {
     type: String,
     required: true,
   },
-  state: {
+  uf: {
     type: String,
     required: true,
   },
@@ -34,20 +34,20 @@ const supplierSchema = {
     type: String,
     required: true,
   },
-  // image: {
-  //   originalName: {
-  //     type:String,
-  //     require: false,
-  //   },
-  //   name: {
-  //     type:String,
-  //     require: false,
-  //   },
-  //   type: {
-  //     type:String,
-  //     require: false,
-  //   },
-  // },
+  image: {
+    originalName: {
+      type:String,
+      require: false,
+    },
+    name: {
+      type:String,
+      require: false,
+    },
+    type: {
+      type:String,
+      require: false,
+    },
+  },
   products:[{
     type:Schema.Types.ObjectId,
     ref: 'products'

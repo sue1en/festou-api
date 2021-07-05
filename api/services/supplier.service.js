@@ -1,7 +1,7 @@
 const { products, categories, supplier } = require('../models/index');
 const productsMapper = require('../mappers/product.mapper');
 const { toListItemDTO, toDTO } = require('../mappers/supplier.mapper');
-// const fileUtils = require('../utils/file.utils');
+const fileUtils = require('../utils/file.utils');
 const { isEmailRegistered } = require('./user.service');
 const { createHash } = require('../utils/cryptography.utils');
 
@@ -11,7 +11,7 @@ const isCnpjRegistered = async (cnpj) =>{
 };
 
 const createSupllier = async(model) => {
-  const { email, cnpj, password, kind, ...content} = model;
+  const { email, cnpj, password, kind, image, ...content} = model;
   if(await isEmailRegistered(email)){
     return{
       success: false,
@@ -34,9 +34,14 @@ const createSupllier = async(model) => {
     ...content,
     password: createHash(password),
     kind:'supplier',
-    status: 'Em analise'
+    status: 'Em analise',
+    image: {
+      originalName:image.originalName,
+      name:image.newName,
+      type:image.type,
+    }
   });
-  
+  fileUtils.move(image.originalPath, image.newPath);
   return {
     success: true,
     message: 'Operação realizada com sucesso.',
@@ -45,16 +50,14 @@ const createSupllier = async(model) => {
 };
 
 const getAllSupllier = async () => {
-  const supplierFromDB = await supplier.find();
+  const supplierFromDB = await supplier.find({kind:'supplier'});
   return supplierFromDB.map(supplierDB => {
     return toListItemDTO(supplierDB);
   });
-
 }
 
 const getSupllierById = async(supplierId) => {
   const supplierFromDB = await supplier.findById(supplierId)
-  
   if(supplierFromDB){
     return toListItemDTO(supplierFromDB);
   };
@@ -77,8 +80,8 @@ const editSupplier = async(supplierId, model) => {
       details: ['Usuário não autorizado.'],
     }
   }
-  
-  const { cnpj, tradeName, description, address, state, city, phoneNumber } = model
+
+  const { cnpj, tradeName, description, address, state, city, phoneNumber, image } = model
   
   supplierFromDB.cnpj = cnpj;
   supplierFromDB.tradeName = tradeName;
@@ -88,8 +91,17 @@ const editSupplier = async(supplierId, model) => {
   supplierFromDB.city = city;
   supplierFromDB.phoneNumber = phoneNumber;
   
-  await supplierFromDB.save()
+  if(image){
+    fileUtils.remove('supplier', supplierFromDB.image.name);
+    fileUtils.move(image.originalPath, image.newPath);
+    supplierFromDB.image = {
+      originalName:image.originalName,
+      name:image.newName,
+      type:image.type,
+    }
+  }
   
+  await supplierFromDB.save()
   return {
     success: true,
     message: 'Operação realizada com sucesso.',
@@ -97,8 +109,9 @@ const editSupplier = async(supplierId, model) => {
   }
 };
 
-const deleteSupplier = async(supplierId) => {
+const deleteSupplier = async (supplierId) => {
   const supplierFromDB = await supplier.findById(supplierId)
+
   if(!supplierFromDB){
     return {
       success: false,
@@ -107,6 +120,9 @@ const deleteSupplier = async(supplierId) => {
     }
   }
   
+  const { image } = supplierFromDB;
+  fileUtils.remove('supplier', image.name);
+
   await supplier.deleteOne({
     _id:supplierId
   })

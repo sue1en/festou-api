@@ -1,10 +1,11 @@
 const { clients } = require('../models/index');
 const { toListItemDTO, toDTO} = require('../mappers/client.mapper');
+const fileUtils = require('../utils/file.utils')
 const { createHash } = require('../utils/cryptography.utils');
 const { isEmailRegistered } = require('../services/user.service');
 
 const crateClient = async (model) => {
-  const  {email, password, kind, ...content } = model;
+  const  {email, password, kind, image, ...content } = model;
 
   if(await isEmailRegistered(email)){
     return {
@@ -18,9 +19,14 @@ const crateClient = async (model) => {
     password: createHash(password),
     kind: 'client',
     ...content,
-    status: true
+    status: true,
+    image: {
+      originalName:image.originalName,
+      name:image.newName,
+      type:image.type,
+    }
   });
-
+  fileUtils.move(image.originalPath, image.newPath);
   return {
     success: true,
     message: 'Operação realizada com sucesso.',
@@ -47,14 +53,24 @@ const editClient = async (clientId, model) => {
     }
   };
   
-  const { name, birthdate, address, state, city, phoneNumber } = model;
+  const { name, birthdate, address, state, city, phoneNumber, image } = model;
 
-  clientsFromDB.name = name
-  clientsFromDB.birthdate = birthdate
-  clientsFromDB.address = address
-  clientsFromDB.state = state
-  clientsFromDB.city = city
-  clientsFromDB.phoneNumber = phoneNumber
+  clientsFromDB.name = name;
+  clientsFromDB.birthdate = birthdate;
+  clientsFromDB.address = address;
+  clientsFromDB.state = state;
+  clientsFromDB.city = city;
+  clientsFromDB.phoneNumber = phoneNumber;
+
+  if(image){
+    fileUtils.remove('clients', clientsFromDB.image.name);
+    fileUtils.move(image.originalPath, image.newPath);
+    clientsFromDB.image = {
+      originalName:image.originalName,
+      name:image.newName,
+      type:image.type,
+    }
+  }
 
   await clientsFromDB.save()
   return {
@@ -65,8 +81,8 @@ const editClient = async (clientId, model) => {
 }
 
 
-const getAllClients = async (model) => {
-  const clientsFromDB = await clients.find()
+const getAllClients = async () => {
+  const clientsFromDB = await clients.find({kind:'client'})
   if(!clientsFromDB){
     return {
       success: false,
@@ -112,7 +128,13 @@ const deleteCliente = async (clientId) => {
     }
   };
 
-  await clientsFromDB.deleteOne({ _id:clientId })
+  const { image } = clientsFromDB;
+  fileUtils.remove('clients', image.name);
+
+  await clients.deleteOne({
+    _id:clientId
+  })
+  
   return {
     success:true,
     message: 'Operação realizada com sucesso.',

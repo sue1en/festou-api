@@ -14,15 +14,16 @@ const validateDTO = (type, param, options = {}) => {
           ...acc, item.message
         ]
       }, []);
-      //acc significa aacumulador
-      return res.status(400).send({
+      res.status(400).send({
+        //acc significa aacumulador
         success: false,
         details: [
           ...messages
         ]
       })
+      return
     }
-    return next();
+  return next();
   }
 };
 

@@ -6,7 +6,7 @@ const enderecoRaiz = process.env.FILE_BASE_PATH;
 const root_dir = path.join(path.dirname(require.main.filename),'arquivos')
 
 const createAddress = (destino, fileName = "" ) => {
-  return path.join(enderecoRaiz, destino, fileName)
+  return path.join(root_dir, destino, fileName)
 };
 
 const createName = (type) => {
@@ -15,7 +15,7 @@ const createName = (type) => {
 }
 
 const createDownloadAddress = (origem, fileName) => {
-  return path.join('static', origem, fileName);
+  return path.join('/static', origem, fileName);
 }
 
 const move = (temporario, definitivo) => {
@@ -23,7 +23,11 @@ const move = (temporario, definitivo) => {
 }
 
 const remove = (origem, arquivo) => {
-  return fs.unlinkSync(path.join(root_dir, origem, arquivo)) 
+  const fileAddress = createAddress(origem, arquivo)
+  if(fs.existsSync(fileAddress)){
+    fs.unlinkSync(fileAddress); 
+  }
+  return
 }
 
 module.exports = {

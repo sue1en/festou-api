@@ -15,6 +15,8 @@ module.exports = {
 
   editSupplierCTRL: async (req, res, next) => {
     const { params, body } = req
+
+    // console.log( params, body )
     const serviceResult = await supplierService.editSupplier(params.supplierId, body);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.details}
@@ -25,6 +27,7 @@ module.exports = {
 
   deleteSupplierCTRL: async (req, res, next) => {
     const { params } = req
+   
     const serviceResult = await supplierService.deleteSupplier(params.supplierId);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {message: serviceResult.message} : {details: serviceResult.details}

@@ -1,5 +1,5 @@
 const categoriesController = require('../../controllers/categories.controller');
-// const fileUploadMiddleware = require('../../utils/middlewares/file-upload.middleware');
+const fileUploadMiddleware = require('../../utils/middlewares/file-upload.middleware');
 const validateDTO = require('../../utils/middlewares/validate-dto.middleware');
 const authMiddleware = require('../../utils/middlewares/authorization.middleware')
 const joi = require('joi');
@@ -9,8 +9,8 @@ module.exports = (Router) => {
     .route('/categorias')
     .get(categoriesController.getAllCategoriesCTRL)
     .post(
-      // fileUploadMiddleware('categorias'),
-      authMiddleware.actionAuth('CREATE_CATEGORY'),
+      fileUploadMiddleware('categorias'),
+      // authMiddleware.actionAuth('CREATE_CATEGORY'),
       validateDTO("body", {
         name: joi.string().required().messages({
           'any.required': `"nome" é um campo obrigatório`,
@@ -50,7 +50,8 @@ module.exports = (Router) => {
       categoriesController.deleteCategoriesCTRL
     )
     .put(
-      // fileUploadMiddleware('categorias'),
+      // authMiddleware.actionAuth('CREATE_CATEGORY'),
+      fileUploadMiddleware('categorias', true),
       validateDTO("params", {
         categoryId: joi.string().required().messages({
           'any.required': `"categoryId" é um campo obrigatório`,
