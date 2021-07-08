@@ -1,10 +1,11 @@
 const { user } = require('../models/index');
 const cryptography = require('../utils/cryptography.utils');
 const userMapper = require('../mappers/user.mapper');
+const NotAuthenticatedUserError = require('../utils/errors/error-not-authenticated-user');
 
 const profiles = [
   {
-    id:'1',
+    id: 1,
     description:'admin',
     actions:[
       'CREATE_CATEGORY',
@@ -25,7 +26,7 @@ const profiles = [
     ]
   },
   {
-    id:'2',
+    id: 2,
     description:'supplier',
     actions:[
       'EDIT_SUPPLIER',
@@ -39,15 +40,30 @@ const profiles = [
     ]
   },
   {
-    id:'3',
+    id: 3,
     description:'client',
     actions:[
       'EDIT_CLIENT',
       'DELETE_CLIENT',
       'GET_BY_ID_CLIENT',
     ]
-  }
-]
+  },
+];
+
+const findProfileById = async(profileId) => {
+  const result = await profiles.find(item => Number(item.id) === Number(profileId));
+  return result; 
+};
+
+const supplierUserValidate = async (user) => {
+  if (!user)
+    return false;
+
+  if (user.kind === 'supplier')
+    return user.status === 'active' ? true : false;
+  
+  return true;
+};
 
 const isEmailRegistered = async (email) => {
   const resultFromDB = await user.find({ email });
@@ -74,26 +90,20 @@ const authUserService = async (email, password) => {
   const resultFromDB = await userValidate(email, password);
   
   if(!resultFromDB){
-    return {
-      success: false,
-      message: "não foi possível autenticar o usuário",
-      details: [
-        "usuário ou senha inválido",
-      ],
-    }
-  }
+    throw new NotAuthenticatedUserError('User or password incorrect')
+  };
+  
+  if(!(await supplierUserValidate(resultFromDB))){
+    throw new NotAuthenticatedUserError('User or password incorrect')
+  };
 
   return {
     success: true,
-    message: "usuário autenticado com sucesso",
+    message: "Successfully authenticated",
     data: await createCredential(email) 
   }
 };
 
-const findProfileById = async(profileId) => {
-  const result = await profiles.find(item => Number(item.id) === Number(profileId));
-  return result; 
-};
 
 const validateProfileActions = async (profileId, actions) => {
   const profile = await findProfileById(profileId);

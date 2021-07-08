@@ -2,13 +2,14 @@ const { categories, products } = require('../models/index');
 const categoriesMapper = require('../mappers/categories.mapper');
 const productsMapper = require('../mappers/product.mapper');
 const fileUtils = require('../utils/file.utils');
+const BusinessRuleError = require('../utils/errors/error-business-rule')
 
 const getAll = async () => {
   const categoryFromDB = await categories.find();
   return categoryFromDB.map(categoryDB => {
     return categoriesMapper.toItemListDTO(categoryDB);
   });
-}
+};
 
 const getById = async(categoryId) => {
   const categoryFromDB = await categories.findById(categoryId);
@@ -17,7 +18,7 @@ const getById = async(categoryId) => {
     return categoriesMapper.toDTO(categoryFromDB);
   };
   return;
-}
+};
 
 const createCategory = async (model) => {
   const newCategory = await categories.create({
@@ -30,16 +31,14 @@ const createCategory = async (model) => {
       type:model.image.type,
     }
   });
-  console.log(model.image.originalPath)
-  console.log(model.image.newPath)
-
+ 
   fileUtils.move(model.image.originalPath, model.image.newPath);
   return {
     success: true,
     message: 'cadastro realizados com sucesso',
     data: categoriesMapper.toDTO(newCategory)
   }
-}
+};
 
 const editCategory = async (categoryId, model) => {
   const categoryFromDB = await categories.findOne({ _id:categoryId });
@@ -56,7 +55,8 @@ const editCategory = async (categoryId, model) => {
   categoryFromDB.name = model.name;
   categoryFromDB.description = model.description;
   categoryFromDB.status = model.status;
-  if(typeof model.image === 'object'){
+
+  if ( typeof model.image === 'object' ){
     fileUtils.remove('categorias', categoryFromDB.image.name);
     categoryFromDB.image = {
       originalName:model.image.originalName,
@@ -96,6 +96,8 @@ const deleteCategory = async (categoryId) => {
   }
 };
 
+
+//conferir essa
 const getProductsByCategory = async (categoriesId) => {
   const categoryFromDB = await categories.findById(categoriesId).populate('products');
   const categoriesAsJSON = categoryFromDB.toJSON();

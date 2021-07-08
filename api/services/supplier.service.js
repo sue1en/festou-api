@@ -4,28 +4,22 @@ const { toListItemDTO, toDTO } = require('../mappers/supplier.mapper');
 const fileUtils = require('../utils/file.utils');
 const { isEmailRegistered } = require('./user.service');
 const { createHash } = require('../utils/cryptography.utils');
+const BusinessRuleError = require('../utils/errors/error-business-rule');
 
 const isCnpjRegistered = async (cnpj) =>{
   const resultFromDB = await supplier.find({ cnpj });
   return resultFromDB.length > 0 ? true : false;
 };
 
-const createSupllier = async(model) => {
+const createSupplier = async(model) => {
   const { email, cnpj, password, kind, image, ...content} = model;
+
   if(await isEmailRegistered(email)){
-    return{
-      success: false,
-      message: 'Operação não pode ser realizada.',
-      details: ['Email informado já está cadastrado'],
-    }
+    throw new BusinessRuleError('The email address you have entered is already registered')
   };
   
   if(await isCnpjRegistered(cnpj)){
-    return{
-      success: false,
-      message: 'Operação não pode ser realizada.',
-      details: ['Cnpj informado já está cadastrado'],
-    }
+    throw new BusinessRuleError('The Cnpj you have entered is already registered')
   };
   
   const newSupplier = await supplier.create({
@@ -44,26 +38,28 @@ const createSupllier = async(model) => {
   fileUtils.move(image.originalPath, image.newPath);
   return {
     success: true,
-    message: 'Operação realizada com sucesso.',
+    message: 'The account has been successfully created.',
     data:{ ...toListItemDTO(newSupplier)} 
   }
 };
 
-const getAllSupllier = async () => {
+//TODO *curtidas
+const getAllSupplier = async () => {
   const supplierFromDB = await supplier.find({kind:'supplier'});
   return supplierFromDB.map(supplierDB => {
     return toListItemDTO(supplierDB);
   });
 }
 
-const getSupllierById = async(supplierId) => {
+//TODO error
+const getSupplierById = async(supplierId) => {
   const supplierFromDB = await supplier.findById(supplierId)
   if(supplierFromDB){
     return toListItemDTO(supplierFromDB);
   };
   return; 
 };
-
+//TODO error
 const editSupplier = async(supplierId, model) => {
   const supplierFromDB = await supplier.findById(supplierId)
   if(!supplierFromDB){
@@ -165,9 +161,9 @@ const getProductsBySupplier = async (supplierId) => {
 };
 
 module.exports = {
-  createSupllier,
-  getAllSupllier,
-  getSupllierById,
+  createSupplier,
+  getAllSupplier,
+  getSupplierById,
   editSupplier,
   deleteSupplier,
   changeSupplierStatus,

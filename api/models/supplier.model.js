@@ -51,6 +51,10 @@ const supplierSchema = {
   products:[{
     type:Schema.Types.ObjectId,
     ref: 'products'
+  }],
+  likesSupplier: [{
+    type:Schema.Types.ObjectId,
+    ref: 'suppliersLikes'
   }]
 }
 

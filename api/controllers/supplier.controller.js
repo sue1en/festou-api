@@ -5,7 +5,7 @@ module.exports = {
   createSupplierCTRL: async (req, res, next) => {
     const { body } = req
 
-    const serviceResult = await supplierService.createSupllier(body);
+    const serviceResult = await supplierService.createSupplier(body);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.details}
 
@@ -37,13 +37,13 @@ module.exports = {
   },
 
   getAllSupplierCTRL: async (req, res, next) => {
-    const serviceResult = await supplierService.getAllSupllier();
+    const serviceResult = await supplierService.getAllSupplier();
     return res.status(200).send({data: serviceResult})
   },
 
   getSupplierByIdCTRL: async (req, res, next) => {
     const { params } = req
-    const serviceResult = await supplierService.getSupllierById(params.supplierId);
+    const serviceResult = await supplierService.getSupplierById(params.supplierId);
     if(!serviceResult){
       return res.status(400).send({ details: ["Fornecedor não existe"]});
     }

@@ -4,8 +4,8 @@ const md5HashSecret = process.env.MD5_SECRET;
 const jwtHashSecret = process.env.JWT_SECRET;
 const jwtTimeLimit = process.env.JWT_VALID_TIME;
 
-const createHash = (senha) => {
-  return md5(senha + md5HashSecret)
+const createHash = (password) => {
+  return md5(password + md5HashSecret)
 };
 
 const createToken = (model) => {

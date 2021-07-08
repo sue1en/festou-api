@@ -44,6 +44,10 @@ const clientsSchema = {
       require: false,
     },
   },
+  likesSupplier: [{
+    type:Schema.Types.ObjectId,
+    ref: 'suppliersLikes'
+  }]
 }
 
 module.exports = clientsSchema;
