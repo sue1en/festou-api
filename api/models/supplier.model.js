@@ -55,7 +55,7 @@ const supplierSchema = {
   likesSupplier: [{
     type:Schema.Types.ObjectId,
     ref: 'suppliersLikes'
-  }]
+  }],
 }
 
 module.exports = supplierSchema;

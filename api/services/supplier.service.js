@@ -4,6 +4,7 @@ const { toListItemDTO, toDTO } = require('../mappers/supplier.mapper');
 const fileUtils = require('../utils/file.utils');
 const { isEmailRegistered } = require('./user.service');
 const { createHash } = require('../utils/cryptography.utils');
+const emailUtils = require('../utils/email.utils');
 const BusinessRuleError = require('../utils/errors/error-business-rule');
 
 const isCnpjRegistered = async (cnpj) =>{
@@ -129,6 +130,35 @@ const deleteSupplier = async (supplierId) => {
   }
 };
 
+const newSupplierStatus = async(supplierId, status) => {
+  const supplierFromDB = await supplier.findById(supplierId);
+  if(!supplierFromDB){
+    throw new BusinessRuleError("there's no supplier with the informed ID")
+  };
+
+  supplierFromDB.status = status;
+
+  await supplierFromDB.save();
+
+  if(status === "Ativo") {
+    emailUtils.sendEmail({
+      addressee: supplierFromDB.email,
+      sender: process.env.SENDGRID_SENDER,
+      subject: `Account confirmation | ${supplierFromDB.tradeName}`,
+      body: `Your account has been confirmed.`,
+    })
+  }
+
+  return {
+    success: true,
+    message:"Success!!!",
+    data:{
+      ...toListItemDTO(supplierFromDB.toJSON())
+    }
+  }
+};
+
+//altera ativo inativo
 const changeSupplierStatus = async(suppliersId, status) => {
   const supplierFromDB = await supplier.findById(suppliersId);
   if (!supplierFromDB) {

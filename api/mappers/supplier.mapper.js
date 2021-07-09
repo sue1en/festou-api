@@ -18,7 +18,7 @@ const toListItemDTO = (model) => {
 
 // retorna tudo
 const toDTO = (model) => {
-  const { _id, likesSupplier, password, cratedAt, udatedAt, __v, kind, products, image, ...content } = model
+  const { _id, likesSupplier, password, cratedAt, updatedAt, __v, kind, products, image, ...content } = model
 
   return {
     id: _id,
