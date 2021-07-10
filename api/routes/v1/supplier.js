@@ -1,8 +1,9 @@
 const supplierController = require('../../controllers/supplier.controller');
 const fileUploadMiddleware = require('../../utils/middlewares/file-upload.middleware');
 const productsController = require('../../controllers/products.controller');
-const validateDTO = require('../../utils/middlewares/validate-dto.middleware')
-const authMiddleware = require('../../utils/middlewares/authorization.middleware')
+const validateDTO = require('../../utils/middlewares/validate-dto.middleware');
+const authMiddleware = require('../../utils/middlewares/authorization.middleware');
+const asyncMiddleware = require('../../utils/middlewares/async-middleware');
 const joi = require('joi')
 
 module.exports = (Router) => {
@@ -10,10 +11,12 @@ module.exports = (Router) => {
   //cria e retorna todos
   Router
     .route('/supplier')
-    .get(supplierController.getAllSupplierCTRL)
+    .get(
+      asyncMiddleware(supplierController.getAllSupplierCTRL)
+    )
     .post(
       fileUploadMiddleware('supplier'),
-      validateDTO("body", {
+      asyncMiddleware(validateDTO("body", {
         cnpj: joi.number().required().messages({
           'any.required': `"cnpj" é um campo obrigatório`,
           'string.empty': `"cnpj" não deve ser vazio`,
@@ -52,8 +55,8 @@ module.exports = (Router) => {
         }),
       }, {
         allowUnknown: true,
-      }),
-      supplierController.createSupplierCTRL
+      })),
+      asyncMiddleware(supplierController.createSupplierCTRL)
     )
     
 
@@ -61,24 +64,24 @@ module.exports = (Router) => {
   Router
     .route('/supplier/:supplierId')
     .get(
-      validateDTO("params", {
+      asyncMiddleware(validateDTO("params", {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
         }),
-      }),
-      supplierController.getSupplierByIdCTRL
+      })),
+      asyncMiddleware(supplierController.getSupplierByIdCTRL)
     )
     .put(
       authMiddleware.actionAuth('EDIT_SUPPLIER'),
       fileUploadMiddleware('supplier'),
-      validateDTO("params", {
+      asyncMiddleware(validateDTO("params", {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
         }),
-      }),
-      validateDTO("body", {
+      })),
+      asyncMiddleware(validateDTO("body", {
         cnpj: joi.number().required().messages({
           'any.required': `"cnpj" é um campo obrigatório`,
           'string.empty': `"cnpj" não deve ser vazio`,
@@ -109,8 +112,8 @@ module.exports = (Router) => {
         }),
       }, {
         allowUnknown: true,
-      }),
-      supplierController.editSupplierCTRL
+      })),
+      asyncMiddleware(supplierController.editSupplierCTRL)
     )
     
   //deleta
@@ -118,63 +121,63 @@ module.exports = (Router) => {
     .route('/supplier/:supplierId/delete')
     .delete(
       authMiddleware.actionAuth('DELETE_SUPPLIER'),
-      validateDTO("params", {
+      asyncMiddleware(validateDTO("params", {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
         }),
-      }), 
-      supplierController.deleteSupplierCTRL
+      })), 
+      asyncMiddleware(supplierController.deleteSupplierCTRL)
     )
 
   Router
   .route('/supplier/:supplierId/ativa')
   .put(
     authMiddleware.actionAuth('ACTIVATE_SUPPLIER'),
-    validateDTO("params", {
+    asyncMiddleware(validateDTO("params", {
       supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
         'any.required': `"supplierId" é um campo obrigatório`,
         'string.empty': `"supplierId" não deve ser vazio`,
       }),
-    }), 
-    supplierController.activateSupplierCTRL
+    })), 
+    asyncMiddleware(supplierController.activateSupplierCTRL)
     )
     
   Router
     .route('/supplier/:supplierId/inativa')
     .put(
       authMiddleware.actionAuth('DEACTIVATE_SUPPLIER'),
-      validateDTO("params", {
+      asyncMiddleware(validateDTO("params", {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
         }),
-      }), 
-      supplierController.deactivateSupplierCTRL
+      })), 
+      asyncMiddleware(supplierController.deactivateSupplierCTRL)
     )
 
   //_______Produtos
   Router
     .route('/supplier/:supplierId/products')
     .get(
-      validateDTO('params', {
+      asyncMiddleware(validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
         })
-      }),
-      supplierController.getProductsBySupplierCTRL
+      })),
+      asyncMiddleware(supplierController.getProductsBySupplierCTRL)
     )
     .post(
       fileUploadMiddleware('products'),
       authMiddleware.actionAuth('CREATE_PRODUCT'),
-      validateDTO('params', {
+      asyncMiddleware(validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
         })
-      }),
-      validateDTO('body', {
+      })),
+      asyncMiddleware(validateDTO('body', {
       name: joi.string().required().messages({
         'any.required': `"name" é um campo obrigatório`,
         'string.empty': `"name" não deve ser vazio`,
@@ -197,8 +200,8 @@ module.exports = (Router) => {
       }),
     }, {
       allowUnknown: true,
-    }),
-    productsController.CreateProductCTRL
+    })),
+    asyncMiddleware(productsController.CreateProductCTRL)
   )
   
   Router
@@ -206,7 +209,7 @@ module.exports = (Router) => {
     .put(
       fileUploadMiddleware('products', true),
       authMiddleware.actionAuth('EDIT_PRODUCT'),
-      validateDTO('params', {
+      asyncMiddleware(validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
@@ -215,8 +218,8 @@ module.exports = (Router) => {
           'any.required': `"productId" é um campo obrigatório`,
           'string.empty': `"productId" não deve ser vazio`,
         })
-      }),
-      validateDTO('body', {
+      })),
+      asyncMiddleware(validateDTO('body', {
         name: joi.string().required().messages({
           'any.required': `"name" é um campo obrigatório`,
           'string.empty': `"name" não deve ser vazio`,
@@ -239,12 +242,12 @@ module.exports = (Router) => {
         }),
       }, {
         allowUnknown: true,
-      }),
-      productsController.editProductCTRL
+      })),
+      asyncMiddleware(productsController.editProductCTRL)
     )
     .delete(
       authMiddleware.actionAuth('DELETE_PRODUCT'),
-      validateDTO('params', {
+      asyncMiddleware(validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
           'string.empty': `"supplierId" não deve ser vazio`,
@@ -253,8 +256,8 @@ module.exports = (Router) => {
           'any.required': `"productId" é um campo obrigatório`,
           'string.empty': `"productId" não deve ser vazio`,
         })
-      }),
-      productsController.deleteProductCTRL
+      })),
+      asyncMiddleware(productsController.deleteProductCTRL)
     )
 
 }

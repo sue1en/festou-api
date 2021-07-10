@@ -1,17 +1,20 @@
 const categoriesController = require('../../controllers/categories.controller');
 const fileUploadMiddleware = require('../../utils/middlewares/file-upload.middleware');
 const validateDTO = require('../../utils/middlewares/validate-dto.middleware');
-const authMiddleware = require('../../utils/middlewares/authorization.middleware')
+const authMiddleware = require('../../utils/middlewares/authorization.middleware');
+const asyncMiddleware = require('../../utils/middlewares/async-middleware');
 const joi = require('joi');
 
 module.exports = (Router) => {
   Router
     .route('/categorias')
-    .get(categoriesController.getAllCategoriesCTRL)
+    .get(
+      asyncMiddleware(categoriesController.getAllCategoriesCTRL)
+    )
     .post(
       fileUploadMiddleware('categorias'),
-      // authMiddleware.actionAuth('CREATE_CATEGORY'),
-      validateDTO("body", {
+      authMiddleware.actionAuth('CREATE_CATEGORY'),
+      asyncMiddleware(validateDTO("body", {
         name: joi.string().required().messages({
           'any.required': `"nome" é um campo obrigatório`,
           'string.empty': `"nome" não deve ser vazio`,
@@ -26,39 +29,39 @@ module.exports = (Router) => {
         }),
       }, {
         allowUnknown: true,
-      }),
-      categoriesController.createCategoriesCTRL
+      })),
+      asyncMiddleware(categoriesController.createCategoriesCTRL)
     )
   Router
     .route('/categorias/:categoryId')
     .get(
-      validateDTO("params", {
-        categoryId: joi.string().required().messages({
+      asyncMiddleware(validateDTO("params", {
+        categoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"categoryId" é um campo obrigatório`,
           'string.empty': `"categoryId" não deve ser vazio`,
         })
-      }),
-      categoriesController.getCategoryByIdCTRL
+      })),
+      asyncMiddleware(categoriesController.getCategoryByIdCTRL)
     )
     .delete(
-      validateDTO("params", {
-        categoryId: joi.string().required().messages({
+      asyncMiddleware(validateDTO("params", {
+        categoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"categoryId" é um campo obrigatório`,
           'string.empty': `"categoryId" não deve ser vazio`,
         })
-      }),
-      categoriesController.deleteCategoriesCTRL
+      })),
+      asyncMiddleware(categoriesController.deleteCategoriesCTRL)
     )
     .put(
-      // authMiddleware.actionAuth('CREATE_CATEGORY'),
+      authMiddleware.actionAuth('CREATE_CATEGORY'),
       fileUploadMiddleware('categorias', true),
-      validateDTO("params", {
-        categoryId: joi.string().required().messages({
+      asyncMiddleware(validateDTO("params", {
+        categoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"categoryId" é um campo obrigatório`,
           'string.empty': `"categoryId" não deve ser vazio`,
         })
-      }),
-      validateDTO("body", {
+      })),
+      asyncMiddleware(validateDTO("body", {
         name: joi.string().required().messages({
           'any.required': `"nome" é um campo obrigatório`,
           'string.empty': `"nome" não deve ser vazio`,
@@ -73,23 +76,20 @@ module.exports = (Router) => {
         }),
       }, {
         allowUnknown: true,
-      }),
-      categoriesController.editCategoriesCTRL
+      })),
+      asyncMiddleware(categoriesController.editCategoriesCTRL)
     )
 
   Router
     .route('/categorias/:categoryId/products')
     .get(
-      validateDTO("params", {
+      asyncMiddleware(validateDTO("params", {
         categoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"categoryId" é um campo obrigatório`,
           'string.empty': `"categoryId" não deve ser vazio`,
         })
-    }),
-      categoriesController.getProductsByCategoryCTRL
+    })),
+      asyncMiddleware(categoriesController.getProductsByCategoryCTRL)
     )
-
-
-    
 
 }
