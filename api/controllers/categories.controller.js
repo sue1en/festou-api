@@ -33,8 +33,7 @@ module.exports = {
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = serviceResult.success ? {message: serviceResult.message} : {details:serviceResult.details}
 
-    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
-    }); 
+    return res.status(statusCodeReturn).send(dataReturn); 
   },
 
   getAllCategoriesCTRL: async (req, res, next) => {

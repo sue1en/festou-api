@@ -6,11 +6,13 @@ const sendEmail = async ({ addressee, sender, subject, body }) => {
     to: addressee,
     from: sender,
     subject: subject,
-    textfield:body,
+    text:body,
   }
-  await sendgrid
-    .send(msg)
-  console.log('EMAIL SENT!');
+  await sendgrid.send(msg).then(() => {
+    console.log('EMAIL SENT!')
+}).catch((error) => {
+    console.log(error.response.body)
+})
 }
 
 module.exports = {

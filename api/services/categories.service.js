@@ -3,8 +3,6 @@ const categoriesMapper = require('../mappers/categories.mapper');
 const productsMapper = require('../mappers/product.mapper');
 const fileUtils = require('../utils/file.utils');
 const BusinessRuleError = require('../utils/errors/error-business-rule');
-const NotAuthenticatedUserError = require('../utils/errors/error-not-authenticated-user');
-const NotAuthorizedUserError = require('../utils/errors/error-not-authorized-user');
 
 const getAll = async () => {
   const categoriesFromDB = await categories.find();

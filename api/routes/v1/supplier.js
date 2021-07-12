@@ -7,7 +7,6 @@ const asyncMiddleware = require('../../utils/middlewares/async-middleware');
 const joi = require('joi')
 
 module.exports = (Router) => {
-  //
   //cria e retorna todos
   Router
     .route('/supplier')
@@ -15,7 +14,7 @@ module.exports = (Router) => {
       asyncMiddleware(supplierController.getAllSupplierCTRL)
     )
     .post(
-      fileUploadMiddleware('supplier'),
+      asyncMiddleware(fileUploadMiddleware('supplier')),
       asyncMiddleware(validateDTO("body", {
         cnpj: joi.number().required().messages({
           'any.required': `"cnpj" é um campo obrigatório`,
@@ -73,8 +72,8 @@ module.exports = (Router) => {
       asyncMiddleware(supplierController.getSupplierByIdCTRL)
     )
     .put(
-      authMiddleware.actionAuth('EDIT_SUPPLIER'),
-      fileUploadMiddleware('supplier'),
+      asyncMiddleware(authMiddleware.actionAuth('EDIT_SUPPLIER')),
+      asyncMiddleware(fileUploadMiddleware('supplier')),
       asyncMiddleware(validateDTO("params", {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
@@ -120,7 +119,7 @@ module.exports = (Router) => {
   Router
     .route('/supplier/:supplierId/delete')
     .delete(
-      authMiddleware.actionAuth('DELETE_SUPPLIER'),
+      asyncMiddleware(authMiddleware.actionAuth('DELETE_SUPPLIER')),
       asyncMiddleware(validateDTO("params", {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
@@ -133,7 +132,7 @@ module.exports = (Router) => {
   Router
   .route('/supplier/:supplierId/ativa')
   .put(
-    authMiddleware.actionAuth('ACTIVATE_SUPPLIER'),
+    asyncMiddleware(authMiddleware.actionAuth('ACTIVATE_SUPPLIER')),
     asyncMiddleware(validateDTO("params", {
       supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
         'any.required': `"supplierId" é um campo obrigatório`,
@@ -146,7 +145,7 @@ module.exports = (Router) => {
   Router
     .route('/supplier/:supplierId/inativa')
     .put(
-      authMiddleware.actionAuth('DEACTIVATE_SUPPLIER'),
+      asyncMiddleware(authMiddleware.actionAuth('DEACTIVATE_SUPPLIER')),
       asyncMiddleware(validateDTO("params", {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
@@ -154,6 +153,19 @@ module.exports = (Router) => {
         }),
       })), 
       asyncMiddleware(supplierController.deactivateSupplierCTRL)
+    )
+
+  Router
+    .route('/supplier/:supplierId/recusa')
+    .put(
+      asyncMiddleware(authMiddleware.actionAuth('DENIE_SUPPLIER')),
+      asyncMiddleware(validateDTO("params", {
+        supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+          'any.required': `"supplierId" é um campo obrigatório`,
+          'string.empty': `"supplierId" não deve ser vazio`,
+        }),
+      })), 
+      asyncMiddleware(supplierController.denieSupplierCTRL)
     )
 
   //_______Produtos
@@ -170,7 +182,7 @@ module.exports = (Router) => {
     )
     .post(
       fileUploadMiddleware('products'),
-      authMiddleware.actionAuth('CREATE_PRODUCT'),
+      asyncMiddleware(authMiddleware.actionAuth('CREATE_PRODUCT')),
       asyncMiddleware(validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
@@ -208,7 +220,7 @@ module.exports = (Router) => {
     .route('/supplier/:supplierId/products/:productId')
     .put(
       fileUploadMiddleware('products', true),
-      authMiddleware.actionAuth('EDIT_PRODUCT'),
+      asyncMiddleware(authMiddleware.actionAuth('EDIT_PRODUCT')),
       asyncMiddleware(validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
@@ -246,7 +258,7 @@ module.exports = (Router) => {
       asyncMiddleware(productsController.editProductCTRL)
     )
     .delete(
-      authMiddleware.actionAuth('DELETE_PRODUCT'),
+      asyncMiddleware(authMiddleware.actionAuth('DELETE_PRODUCT')),
       asyncMiddleware(validateDTO('params', {
         supplierId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"supplierId" é um campo obrigatório`,
@@ -260,4 +272,4 @@ module.exports = (Router) => {
       asyncMiddleware(productsController.deleteProductCTRL)
     )
 
-}
+};
