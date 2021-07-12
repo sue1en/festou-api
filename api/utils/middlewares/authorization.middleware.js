@@ -8,14 +8,16 @@ const NotAuthorizedUserError = require('../errors/error-not-authorized-user');
 const actionAuth = (route = '*') => {
   return async (req, res, next) => {
     const routeTest = route;
+
     console.log(routeTest);
+    
     const { token } = req.headers;
     if(!token){
-      throw new NotAuthorizedUserError('Oops! User not authorized!');
+      throw new NotAuthenticatedUserError('Oops! User not authenticated!')
     };
     
     if(!cryptoUtils.validateToken(token)){
-      throw new NotAuthenticatedUserError('Oops! User not authenticated!')
+      throw new NotAuthorizedUserError('Oops! User not authorized!');
     }
     
     const { id, email, kind } = cryptoUtils.decodeToken(token);
@@ -26,7 +28,7 @@ const actionAuth = (route = '*') => {
     
     if(routeTest != '*'){
       if(!await validateProfileActions(kind, routeTest))
-      throw new NotAuthenticatedUserError('Oops! User not authenticated!')
+        throw new NotAuthorizedUserError('Oops! User not authorized!');
     }
     req.user = {
       id,

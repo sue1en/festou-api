@@ -13,7 +13,7 @@ module.exports = (Router) => {
     )
     .post(
       fileUploadMiddleware('categorias'),
-      authMiddleware.actionAuth('CREATE_CATEGORY'),
+      asyncMiddleware(authMiddleware.actionAuth('CREATE_CATEGORY')),
       asyncMiddleware(validateDTO("body", {
         name: joi.string().required().messages({
           'any.required': `"nome" é um campo obrigatório`,
@@ -44,6 +44,7 @@ module.exports = (Router) => {
       asyncMiddleware(categoriesController.getCategoryByIdCTRL)
     )
     .delete(
+      asyncMiddleware(authMiddleware.actionAuth('DELETE_CATEGORY')),
       asyncMiddleware(validateDTO("params", {
         categoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"categoryId" é um campo obrigatório`,
@@ -53,7 +54,7 @@ module.exports = (Router) => {
       asyncMiddleware(categoriesController.deleteCategoriesCTRL)
     )
     .put(
-      authMiddleware.actionAuth('CREATE_CATEGORY'),
+      asyncMiddleware(authMiddleware.actionAuth('EDIT_CATEGORY')),
       fileUploadMiddleware('categorias', true),
       asyncMiddleware(validateDTO("params", {
         categoryId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({

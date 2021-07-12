@@ -21,7 +21,7 @@ const isPutValid = (files) => {
 };
 
 const fileUpload = (destino, isUpdate = false) => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     const form = formidable.IncomingForm({keepExtensions: true, uploadDir: root_dir
     });
 
@@ -45,7 +45,12 @@ const fileUpload = (destino, isUpdate = false) => {
 
     if (req.mothod === 'POST') {
       if(!isPostValid(files))
-      throw new BusinessRuleError('"Image é de preenchimento obrigatório.');
+      throw new BusinessRuleError('"Image" é de preenchimento obrigatório.');
+    };
+
+    if (req.mothod === 'POST') {
+      if(!isPutValid(files))
+      throw new BusinessRuleError('"Image" é de preenchimento obrigatório.');
     };
 
     if(files.image && files.image.name !== ''){

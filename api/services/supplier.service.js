@@ -6,6 +6,8 @@ const { isEmailRegistered } = require('./user.service');
 const { createHash } = require('../utils/cryptography.utils');
 const emailUtils = require('../utils/email.utils');
 const BusinessRuleError = require('../utils/errors/error-business-rule');
+const NotAuthenticatedUserError = require('../utils/errors/error-not-authenticated-user')
+const NotAuthorizedUserError = require('../utils/errors/error-not-authorized-user')
 
 const isCnpjRegistered = async (cnpj) =>{
   const resultFromDB = await supplier.find({ cnpj });
@@ -16,11 +18,11 @@ const createSupplier = async(model) => {
   const { email, cnpj, password, kind, image, ...content} = model;
 
   if(await isEmailRegistered(email)){
-    throw new BusinessRuleError('The email address you have entered is already registered')
+    throw new BusinessRuleError('The email address you have entered was already registered')
   };
   
   if(await isCnpjRegistered(cnpj)){
-    throw new BusinessRuleError('The Cnpj you have entered is already registered')
+    throw new BusinessRuleError('The Cnpj you have entered was already registered')
   };
   
   const newSupplier = await supplier.create({

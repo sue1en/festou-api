@@ -2,33 +2,56 @@ const { categories, products } = require('../models/index');
 const categoriesMapper = require('../mappers/categories.mapper');
 const productsMapper = require('../mappers/product.mapper');
 const fileUtils = require('../utils/file.utils');
-const BusinessRuleError = require('../utils/errors/error-business-rule')
+const BusinessRuleError = require('../utils/errors/error-business-rule');
+const NotAuthenticatedUserError = require('../utils/errors/error-not-authenticated-user');
+const NotAuthorizedUserError = require('../utils/errors/error-not-authorized-user');
 
 const getAll = async () => {
-  const categoryFromDB = await categories.find();
-  return categoryFromDB.map(categoryDB => {
-    return categoriesMapper.toItemListDTO(categoryDB);
-  });
+  const categoriesFromDB = await categories.find();
+  if(!categoriesFromDB){
+    throw new BusinessRuleError("Neither category were registered.")
+  }
+  return {
+    success: true,
+    message: 'Operação realizada com sucesso!',
+    data: categoriesFromDB.map(categoryDB => {
+        return categoriesMapper.toItemListDTO(categoryDB);
+      })
+  }
 };
 
 const getById = async(categoryId) => {
   const categoryFromDB = await categories.findById(categoryId);
-
-  if(categoryFromDB) {
-    return categoriesMapper.toDTO(categoryFromDB);
+  if(!categoryFromDB){
+    throw new BusinessRuleError("there's no category with the informed ID")
   };
-  return;
+
+  return {
+    success: true,
+    message: 'Operação realizada com sucesso!',
+    data: categoriesMapper.toDTO(categoryFromDB),
+  };
 };
 
+const isNameRegistered = async (name) => {
+  const categoryFromDB = await categories.find({ name });
+  return categoryFromDB.length > 0 ? true : false;
+}
+
 const createCategory = async (model) => {
+ const { name, description, status, image } = model;
+  if(await isNameRegistered(name)){
+    throw new BusinessRuleError('The name you have entered was already registered')
+  };
+
   const newCategory = await categories.create({
-    name: model.name,
-    description: model.description,
-    status: model.status,
+    name: name,
+    description: description,
+    status: status,
     image: {
-      originalName: model.image.originalName,
-      name:model.image.newName,
-      type:model.image.type,
+      originalName: image.originalName,
+      name:image.newName,
+      type:image.type,
     }
   });
  
@@ -43,14 +66,9 @@ const createCategory = async (model) => {
 const editCategory = async (categoryId, model) => {
   const categoryFromDB = await categories.findOne({ _id:categoryId });
 
-  if (!categoryFromDB) { 
-    return {
-      success: false,
-      message: 'não foi possível realizar a operação',
-      details: ['"categoriaID" não existe.']
-    }
+  if(!categoryFromDB){
+    throw new BusinessRuleError("there's no category with the informed ID")
   };
-
   
   categoryFromDB.name = model.name;
   categoryFromDB.description = model.description;
@@ -76,12 +94,8 @@ const editCategory = async (categoryId, model) => {
 
 const deleteCategory = async (categoryId) => {
   const categoryFromDB = await categories.findOne({ _id:categoryId });
-  if (!categoryFromDB) { 
-    return {
-      success: false,
-      message: 'não foi possível realizar a operação',
-      details: ['"categoriaID" não existe.']
-    }
+  if(!categoryFromDB){
+    throw new BusinessRuleError("there's no category with the informed ID")
   };
   const { image } = categoryFromDB;
   fileUtils.remove('categorias', image.name);

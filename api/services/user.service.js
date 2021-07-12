@@ -3,6 +3,7 @@ const cryptography = require('../utils/cryptography.utils');
 const userMapper = require('../mappers/user.mapper');
 const NotAuthenticatedUserError = require('../utils/errors/error-not-authenticated-user');
 
+
 const profiles = [
   {
     id: 1,
