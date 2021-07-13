@@ -48,7 +48,7 @@ const createSupplier = async(model) => {
 //TODO *curtidas
 const getAllSupplier = async () => {
   const supplierFromDB = await supplier.find({kind:'supplier'});
-  if(!supplierFromDB) {
+  if(supplierFromDB.length <= 0) {
     throw new BusinessRuleError("There is no Supplier registered yet.")
   }
   return {

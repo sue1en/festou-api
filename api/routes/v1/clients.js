@@ -10,7 +10,7 @@ module.exports = (Router) => {
   Router
     .route('/clients')
     .get(
-      authMiddleware.actionAuth('GET_ALL_CLIENTS'),
+      asyncMiddleware(authMiddleware.actionAuth('GET_ALL_CLIENTS')),
       asyncMiddleware(clientsController.getAllClientsCTRL)
     )
     .post(
@@ -57,7 +57,7 @@ module.exports = (Router) => {
   Router
     .route('/clients/:clientId')
     .get(
-      authMiddleware.actionAuth('GET_BY_ID_CLIENT'),
+      asyncMiddleware(authMiddleware.actionAuth('GET_BY_ID_CLIENT')),
       asyncMiddleware(validateDTO("params", {
         clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,
@@ -67,8 +67,8 @@ module.exports = (Router) => {
       asyncMiddleware(clientsController.getClientsByIdCTRL)
     )
     .put(
-      authMiddleware.actionAuth('EDIT_CLIENT'),
-      fileUploadMiddleware('clients'),
+      asyncMiddleware(authMiddleware.actionAuth('EDIT_CLIENT')),
+      asyncMiddleware(fileUploadMiddleware('clients')),
       asyncMiddleware(validateDTO("params", {
         clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,
@@ -109,7 +109,7 @@ module.exports = (Router) => {
   Router
     .route('/clients/:clientId/delete')
     .delete(
-      authMiddleware.actionAuth('DELETE_CLIENT'),
+      asyncMiddleware(authMiddleware.actionAuth('DELETE_CLIENT')),
       asyncMiddleware(validateDTO("params", {
         clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,
@@ -122,9 +122,9 @@ module.exports = (Router) => {
     Router
   .route('/clients/:clientId/ativa')
   .put(
-    authMiddleware.actionAuth('ACTIVATE_CLIENT'),
+    asyncMiddleware(authMiddleware.actionAuth('ACTIVATE_CLIENT')),
     asyncMiddleware(validateDTO("params", {
-      clientsId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+      clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
         'any.required': `"clientsId" é um campo obrigatório`,
         'string.empty': `"clientsId" não deve ser vazio`,
       }),
@@ -135,7 +135,7 @@ module.exports = (Router) => {
   Router
     .route('/clients/:clientId/inativa')
     .put(
-      authMiddleware.actionAuth('DEACTIVATE_CLIENT'),
+      asyncMiddleware(authMiddleware.actionAuth('DEACTIVATE_CLIENT')),
       asyncMiddleware(validateDTO("params", {
         clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,

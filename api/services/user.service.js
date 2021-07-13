@@ -47,7 +47,6 @@ const profiles = [
     description:'client',
     actions:[
       'EDIT_CLIENT',
-      'DELETE_CLIENT',
       'GET_BY_ID_CLIENT',
     ]
   },

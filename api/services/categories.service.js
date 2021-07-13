@@ -6,7 +6,7 @@ const BusinessRuleError = require('../utils/errors/error-business-rule');
 
 const getAll = async () => {
   const categoriesFromDB = await categories.find();
-  if(!categoriesFromDB){
+  if(categoriesFromDB.length <= 0){
     throw new BusinessRuleError("Neither category were registered.")
   }
   return {
