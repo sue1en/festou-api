@@ -9,8 +9,6 @@ const actionAuth = (route = '*') => {
   return async (req, res, next) => {
     const routeTest = route;
 
-    console.log(routeTest);
-    
     const { token } = req.headers;
     if(!token){
       throw new NotAuthenticatedUserError('Oops! User not authenticated!')

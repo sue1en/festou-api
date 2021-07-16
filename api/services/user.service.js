@@ -1,7 +1,10 @@
 const { user } = require('../models/index');
+const { supplier } = require('../models/index');
+
 const cryptography = require('../utils/cryptography.utils');
 const userMapper = require('../mappers/user.mapper');
 const NotAuthenticatedUserError = require('../utils/errors/error-not-authenticated-user');
+const NotAuthorizedUserError = require('../utils/errors/error-not-authorized-user');
 
 
 const profiles = [
@@ -57,13 +60,13 @@ const findProfileById = async(profileId) => {
   return result; 
 };
 
-const supplierUserValidate = async (user) => {
-  if (!user)
-    return false;
+const supplierUserValidate = async (userEmail) => {
+  const userDB = await supplier.findOne({
+    email: userEmail,
+  });
 
-  if (user.kind === 'supplier')
-    return user.status === 'active' ? true : false;
-  
+  if (userDB.kind === 'supplier')
+    return userDB.status === 'Ativo' ? true : false;
   return true;
 };
 
@@ -80,7 +83,6 @@ const createCredential = async (userEmail) => {
   const userDB = await user.findOne({
     email: userEmail,
   });
-  
   const userDTO = userMapper.toUserDTO(userDB);
   return {
     token: cryptography.createToken(userDTO),
@@ -95,8 +97,8 @@ const authUserService = async (email, password) => {
     throw new NotAuthenticatedUserError('User or password incorrect')
   };
   
-  if(!(await supplierUserValidate(resultFromDB))){
-    throw new NotAuthenticatedUserError('User or password incorrect')
+  if(!(await supplierUserValidate(email))){
+    throw new NotAuthorizedUserError('The account was not activated by the admin.')
   };
 
   return {
@@ -106,12 +108,10 @@ const authUserService = async (email, password) => {
   }
 };
 
-
 const validateProfileActions = async (profileId, actions) => {
   const profile = await findProfileById(profileId);
   return profile.actions.includes(actions);
 }
-
 
 module.exports = {
   authUserService, 

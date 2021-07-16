@@ -30,7 +30,7 @@ const createSupplier = async(model) => {
     ...content,
     password: createHash(password),
     kind:'supplier',
-    status: 'Em analise',
+    status: 'Em análise', // Em análise | Ativo | Inativo
     image: {
       originalName:image.originalName,
       name:image.newName,
@@ -83,13 +83,13 @@ const editSupplier = async(model) => {
     throw new NotAuthorizedUserError()
   }
 
-  const { cnpj, tradeName, description, address, state, city, phoneNumber, image } = model
+  const { cnpj, tradeName, description, address, uf, city, phoneNumber, image } = model
   
   supplierFromDB.cnpj = cnpj;
   supplierFromDB.tradeName = tradeName;
   supplierFromDB.description = description;
   supplierFromDB.address = address;
-  supplierFromDB.state = state;
+  supplierFromDB.uf = uf;
   supplierFromDB.city = city;
   supplierFromDB.phoneNumber = phoneNumber;
   

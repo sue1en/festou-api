@@ -3,7 +3,6 @@ const BusinessRuleError = require('../errors/error-business-rule');
 
 const validateDTO = (type, param, options = {}) => {
   return async (req, res, next) => {
-    console.log(req[type]);
     const schema = Joi.object().keys(param);
     const result = schema.validate(req[type], {
       allowUnknown: false,
