@@ -1,8 +1,9 @@
-const joi = require('joi');
+const Joi = require('joi');
+const BusinessRuleError = require('../errors/error-business-rule');
 
 const validateDTO = (type, param, options = {}) => {
-  return (req, res, next) => {
-    const schema = joi.object().keys(param);
+  return async (req, res, next) => {
+    const schema = Joi.object().keys(param);
     const result = schema.validate(req[type], {
       allowUnknown: false,
       ...options,
@@ -14,14 +15,8 @@ const validateDTO = (type, param, options = {}) => {
           ...acc, item.message
         ]
       }, []);
-      res.status(400).send({
-        //acc significa aacumulador
-        success: false,
-        details: [
-          ...messages
-        ]
-      })
-      return
+      
+      throw new BusinessRuleError(messages)
     }
   return next();
   }

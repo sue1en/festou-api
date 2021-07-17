@@ -2,6 +2,7 @@ const clientsController = require('../../controllers/clients.controller');
 const fileUploadMiddleware = require('../../utils/middlewares/file-upload.middleware');
 const joi = require('joi');
 const validateDTO = require('../../utils/middlewares/validate-dto.middleware');
+const asyncMiddleware = require('../../utils/middlewares/async-middleware');
 const authMiddleware = require('../../utils/middlewares/authorization.middleware')
 
 module.exports = (Router) => {
@@ -9,11 +10,12 @@ module.exports = (Router) => {
   Router
     .route('/clients')
     .get(
-      authMiddleware.actionAuth('GET_ALL_CLIENTS'),
-      clientsController.getAllClientsCTRL)
+      asyncMiddleware(authMiddleware.actionAuth('GET_ALL_CLIENTS')),
+      asyncMiddleware(clientsController.getAllClientsCTRL)
+    )
     .post(
       fileUploadMiddleware('clients'),
-      validateDTO("body", {
+      asyncMiddleware(validateDTO("body", {
         name: joi.string().required().messages({
           'any.required': `"name" é um campo obrigatório`,
           'string.empty': `"name" não deve ser vazio`,
@@ -48,32 +50,32 @@ module.exports = (Router) => {
         }),
       }, {
         allowUnknown: true,
-      }),
-      clientsController.createClientsCTRL
+      })),
+      asyncMiddleware(clientsController.createClientsCTRL)
     )
 
   Router
     .route('/clients/:clientId')
     .get(
-      authMiddleware.actionAuth('GET_BY_ID_CLIENT'),
-      validateDTO("params", {
+      asyncMiddleware(authMiddleware.actionAuth('GET_BY_ID_CLIENT')),
+      asyncMiddleware(validateDTO("params", {
         clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,
           'string.empty': `"clientId" não deve ser vazio`,
         }),  
-      }),  
-      clientsController.getClientsByIdCTRL
+      })),  
+      asyncMiddleware(clientsController.getClientsByIdCTRL)
     )
     .put(
-      authMiddleware.actionAuth('EDIT_CLIENT'),
-      fileUploadMiddleware('clients'),
-      validateDTO("params", {
+      asyncMiddleware(authMiddleware.actionAuth('EDIT_CLIENT')),
+      asyncMiddleware(fileUploadMiddleware('clients')),
+      asyncMiddleware(validateDTO("params", {
         clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,
           'string.empty': `"clientId" não deve ser vazio`,
         }),  
-      }),  
-      validateDTO("body", {
+      })),  
+      asyncMiddleware(validateDTO("body", {
         name: joi.string().required().messages({
           'any.required': `"name" é um campo obrigatório`,
           'string.empty': `"name" não deve ser vazio`,
@@ -100,46 +102,46 @@ module.exports = (Router) => {
         }),
       }, {
         allowUnknown: true,
-      }),
-      clientsController.editClientsCTRL
+      })),
+      asyncMiddleware(clientsController.editClientsCTRL)
     )
   
   Router
     .route('/clients/:clientId/delete')
     .delete(
-      authMiddleware.actionAuth('DELETE_CLIENT'),
-      validateDTO("params", {
+      asyncMiddleware(authMiddleware.actionAuth('DELETE_CLIENT')),
+      asyncMiddleware(validateDTO("params", {
         clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,
           'string.empty': `"clientId" não deve ser vazio`,
         }),  
-      }),
-      clientsController.deleteClientsCTRL
+      })),
+      asyncMiddleware(clientsController.deleteClientsCTRL)
     )
   
     Router
   .route('/clients/:clientId/ativa')
   .put(
-    authMiddleware.actionAuth('ACTIVATE_CLIENT'),
-    validateDTO("params", {
-      clientsId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
+    asyncMiddleware(authMiddleware.actionAuth('ACTIVATE_CLIENT')),
+    asyncMiddleware(validateDTO("params", {
+      clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
         'any.required': `"clientsId" é um campo obrigatório`,
         'string.empty': `"clientsId" não deve ser vazio`,
       }),
-    }), 
-    clientsController.activateClientCTRL
+    })), 
+    asyncMiddleware(clientsController.activateClientCTRL)
     )
     
   Router
     .route('/clients/:clientId/inativa')
     .put(
-      authMiddleware.actionAuth('DEACTIVATE_CLIENT'),
-      validateDTO("params", {
+      asyncMiddleware(authMiddleware.actionAuth('DEACTIVATE_CLIENT')),
+      asyncMiddleware(validateDTO("params", {
         clientId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required().messages({
           'any.required': `"clientId" é um campo obrigatório`,
           'string.empty': `"clientId" não deve ser vazio`,
         }),
-      }), 
-      clientsController.deactivateClientCTRL
+      })), 
+      asyncMiddleware(clientsController.deactivateClientCTRL)
     )
 }

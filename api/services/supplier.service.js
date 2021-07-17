@@ -4,28 +4,24 @@ const { toListItemDTO, toDTO } = require('../mappers/supplier.mapper');
 const fileUtils = require('../utils/file.utils');
 const { isEmailRegistered } = require('./user.service');
 const { createHash } = require('../utils/cryptography.utils');
+const emailUtils = require('../utils/email.utils');
+const BusinessRuleError = require('../utils/errors/error-business-rule');
+const NotAuthorizedUserError = require('../utils/errors/error-not-authorized-user')
 
 const isCnpjRegistered = async (cnpj) =>{
   const resultFromDB = await supplier.find({ cnpj });
   return resultFromDB.length > 0 ? true : false;
 };
 
-const createSupllier = async(model) => {
+const createSupplier = async(model) => {
   const { email, cnpj, password, kind, image, ...content} = model;
+
   if(await isEmailRegistered(email)){
-    return{
-      success: false,
-      message: 'Operação não pode ser realizada.',
-      details: ['Email informado já está cadastrado'],
-    }
+    throw new BusinessRuleError('The email address you have entered was already registered')
   };
   
   if(await isCnpjRegistered(cnpj)){
-    return{
-      success: false,
-      message: 'Operação não pode ser realizada.',
-      details: ['Cnpj informado já está cadastrado'],
-    }
+    throw new BusinessRuleError('The Cnpj you have entered was already registered')
   };
   
   const newSupplier = await supplier.create({
@@ -34,7 +30,7 @@ const createSupllier = async(model) => {
     ...content,
     password: createHash(password),
     kind:'supplier',
-    status: 'Em analise',
+    status: 'Em análise', // Em análise | Ativo | Inativo
     image: {
       originalName:image.originalName,
       name:image.newName,
@@ -44,50 +40,56 @@ const createSupllier = async(model) => {
   fileUtils.move(image.originalPath, image.newPath);
   return {
     success: true,
-    message: 'Operação realizada com sucesso.',
+    message: 'The account has been successfully created.',
     data:{ ...toListItemDTO(newSupplier)} 
   }
 };
 
-const getAllSupllier = async () => {
+//TODO *curtidas
+const getAllSupplier = async () => {
   const supplierFromDB = await supplier.find({kind:'supplier'});
-  return supplierFromDB.map(supplierDB => {
-    return toListItemDTO(supplierDB);
-  });
-}
-
-const getSupllierById = async(supplierId) => {
-  const supplierFromDB = await supplier.findById(supplierId)
-  if(supplierFromDB){
-    return toListItemDTO(supplierFromDB);
-  };
-  return; 
+  if(supplierFromDB.length <= 0) {
+    throw new BusinessRuleError("There is no Supplier registered yet.")
+  }
+  return {
+    success: true,
+    message: 'Operação realizada com sucesso!',
+    data: supplierFromDB.map(supplierDB => {
+        return toListItemDTO(supplierDB);
+      })
+  }
 };
 
-const editSupplier = async(supplierId, model) => {
-  const supplierFromDB = await supplier.findById(supplierId)
+//TODO error
+const getSupplierById = async(supplierId) => {
+  const supplierFromDB = await supplier.findById(supplierId); 
   if(!supplierFromDB){
-    return {
-      success: false,
-      message: 'Operação não pode ser realizada.',
-      details: ['Não existe fornecedor cadastrado para o id informado'],
-    }
+    throw new BusinessRuleError("there's no supplier with the informed ID")
+  };
+  return {
+    success: true,
+    message: 'operação realaizada com sucesso!',
+    data: toListItemDTO(supplierFromDB),
   }
-  if(supplierId !== supplierFromDB.id){
-    return {
-      success: false,
-      message: 'Operação não pode ser realizada.',
-      details: ['Usuário não autorizado.'],
-    }
+};
+//TODO error
+const editSupplier = async(model) => {
+  const supplierFromDB = await supplier.findById(model.supplierId)
+  if(!supplierFromDB){
+    throw new BusinessRuleError("there's no supplier with the informed ID")
   }
 
-  const { cnpj, tradeName, description, address, state, city, phoneNumber, image } = model
+  if(await model.supplierId !== model.authSupplier){
+    throw new NotAuthorizedUserError()
+  }
+
+  const { cnpj, tradeName, description, address, uf, city, phoneNumber, image } = model
   
   supplierFromDB.cnpj = cnpj;
   supplierFromDB.tradeName = tradeName;
   supplierFromDB.description = description;
   supplierFromDB.address = address;
-  supplierFromDB.state = state;
+  supplierFromDB.uf = uf;
   supplierFromDB.city = city;
   supplierFromDB.phoneNumber = phoneNumber;
   
@@ -105,19 +107,15 @@ const editSupplier = async(supplierId, model) => {
   return {
     success: true,
     message: 'Operação realizada com sucesso.',
-    data: {...toDTO(supplierFromDB)}
+    data: toListItemDTO(supplierFromDB),
   }
 };
 
 const deleteSupplier = async (supplierId) => {
-  const supplierFromDB = await supplier.findById(supplierId)
+  const supplierFromDB = await supplier.findById(supplierId);
 
   if(!supplierFromDB){
-    return {
-      success: false,
-      message: 'Operação não pode ser realizada.',
-      details: ['Não existe fornecedor cadastrado para o id informado'],
-    }
+    throw new BusinessRuleError("there's no supplier with the informed ID")
   }
   
   const { image } = supplierFromDB;
@@ -129,32 +127,88 @@ const deleteSupplier = async (supplierId) => {
   
   return {
     success: true,
-    message: 'Operação realizada com sucesso.'
+    message: 'Operação realizada com sucesso.',
+    data: `The supplier ${supplierFromDB.tradeName} with de id ${supplierFromDB.id}, has been deleted`
   }
 };
 
-const changeSupplierStatus = async(suppliersId, status) => {
-  const supplierFromDB = await supplier.findById(suppliersId);
-  if (!supplierFromDB) {
-    return {
-      success: false,
-      message: 'Operação não pode ser realizada.',
-      details: [
-        'Não existe fornecedor cadastrado para o id informado'
-      ],
-    }
-  }
+// const newSupplierStatus = async(supplierId, status) => {
+//   const supplierFromDB = await supplier.findById(supplierId);
+//   if(!supplierFromDB){
+//     throw new BusinessRuleError("there's no supplier with the informed ID")
+//   };
+
+//   supplierFromDB.status = status;
+//   await supplierFromDB.save();
+
+//   if(status === "Ativo") {
+//     emailUtils.sendEmail({
+//       addressee: supplierFromDB.email,
+//       sender: process.env.SENDGRID_SENDER,
+//       subject: `Account registration reply | ${supplierFromDB.tradeName}`,
+//       body: `Your account has been confirmed.`,
+//     })
+//   }
+
+//   return {
+//     success: true,
+//     message:"Success!!!",
+//     data:{
+//       ...toListItemDTO(supplierFromDB.toJSON())
+//     }
+//   }
+// };
+
+//altera ativo inativo
+const changeSupplierStatus = async(supplierId, status) => {
+  const supplierFromDB = await supplier.findById(supplierId);
+  if(!supplierFromDB){
+    throw new BusinessRuleError("there's no supplier with the informed ID")
+  };
 
   supplierFromDB.status = status;
   await supplierFromDB.save();
+
+  if(status === "Ativo") {
+    emailUtils.sendEmail({
+      addressee: supplierFromDB.email,
+      sender: process.env.SENDGRID_SENDER,
+      subject: `Account registration reply | ${supplierFromDB.tradeName}`,
+      body: `Your account has been confirmed.`,
+    })
+  }
+
   return {
-    success:true,
-    message: 'Operação realizada com sucesso.',
-    data: {
+    success: true,
+    message:"Success!!!",
+    data:{
       ...toListItemDTO(supplierFromDB.toJSON())
     }
   }
 };
+
+// const changeSupplierStatus = async(suppliersId, status) => {
+//   const supplierFromDB = await supplier.findById(suppliersId);
+//   if (!supplierFromDB) {
+//     return {
+//       success: false,
+//       message: 'Operação não pode ser realizada.',
+//       details: [
+//         'Não existe fornecedor cadastrado para o id informado'
+//       ],
+//     }
+//   }
+
+//   supplierFromDB.status = status;
+//   await supplierFromDB.save();
+//   return {
+//     success:true,
+//     message: 'Operação realizada com sucesso.',
+//     data: {
+//       ...toListItemDTO(supplierFromDB.toJSON())
+//     }
+//   }
+// };
 
 const getProductsBySupplier = async (supplierId) => {
   const supplierFromDB = await supplier.findById(supplierId).populate('products');
@@ -165,16 +219,12 @@ const getProductsBySupplier = async (supplierId) => {
 };
 
 module.exports = {
-  createSupllier,
-  getAllSupllier,
-  getSupllierById,
+  createSupplier,
+  getAllSupplier,
+  getSupplierById,
   editSupplier,
   deleteSupplier,
   changeSupplierStatus,
   getProductsBySupplier,
-}
-
-  // console.log('##########__email__##########')
-  // console.log(await isEmailRegistered(email))
-  // console.log('############################')
-  
+  // newSupplierStatus,
+};

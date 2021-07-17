@@ -21,7 +21,8 @@ module.exports = {
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details:serviceResult.details}
 
-    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
+    return res.status(statusCodeReturn).send({
+      messege:serviceResult.message, ...dataReturn
     });
   },
 
@@ -32,27 +33,25 @@ module.exports = {
     const statusCodeReturn = serviceResult.success ? 200 : 400
     const dataReturn = serviceResult.success ? {message: serviceResult.message} : {details:serviceResult.details}
 
-    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
-    }); 
+    return res.status(statusCodeReturn).send(dataReturn); 
   },
 
   getAllCategoriesCTRL: async (req, res, next) => {
     const serviceResult = await categoriesService.getAll();
-    return res.status(200).send({data: serviceResult});
+    const statusCodeReturn = serviceResult.success ? 200 : 400;
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details:serviceResult.details};
+
+    return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn});
   },
 
   getCategoryByIdCTRL: async (req, res, next) => {
     const { params } = req;
     const serviceResult = await categoriesService.getById(params.categoryId);
-    
-    if(!serviceResult){
-      return res.status(400).send({
-        details: [
-          "Categoria informada não existe!"
-        ]
-      });
-    }
-    return res.status(200).send(serviceResult);
+
+    const statusCodeReturn = serviceResult.success ? 200 : 400;
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details:serviceResult.details};
+
+    return res.status(statusCodeReturn).send(dataReturn);
   },
 
   //Produto

@@ -3,23 +3,21 @@ const { toListItemDTO, toDTO} = require('../mappers/client.mapper');
 const fileUtils = require('../utils/file.utils')
 const { createHash } = require('../utils/cryptography.utils');
 const { isEmailRegistered } = require('../services/user.service');
+const BusinessRuleError = require('../utils/errors/error-business-rule');
+const NotAuthorizedUserError = require('../utils/errors/error-not-authorized-user')
 
 const crateClient = async (model) => {
   const  {email, password, kind, image, ...content } = model;
 
   if(await isEmailRegistered(email)){
-    return {
-      success: false,
-      message: 'Operação não pode ser realizada.',
-      details: [ 'Email informado já está cadastrado']
-    }
+    throw new BusinessRuleError('The email address you have entered was already registered')
   };
   const newClient = await clients.create({
     email,
     password: createHash(password),
     kind: 'client',
     ...content,
-    status: true,
+    status: 'Ativo',
     image: {
       originalName:image.originalName,
       name:image.newName,
@@ -29,36 +27,29 @@ const crateClient = async (model) => {
   fileUtils.move(image.originalPath, image.newPath);
   return {
     success: true,
-    message: 'Operação realizada com sucesso.',
+    message: 'The account has been successfully created.',
     data: {
       ...toListItemDTO(newClient)
     }
   }
 }
 
-const editClient = async (clientId, model) => {
-  const clientsFromDB = await clients.findById(clientId)
+const editClient = async (model) => {
+  const clientsFromDB = await clients.findById(model.clientId)
   if(!clientsFromDB){
-    return {
-      success: false,
-      message: 'Não foi possível realizar operação',
-      details: ['Não há cliente cadastrado com o id informado']
-    }
+    throw new BusinessRuleError("there's no supplier with the informed ID")
   };
-  if(clientsFromDB.id !== clientId ){
-    return {
-      success: false,
-      message: 'Operação não permitida',
-      details: ['Id informado não pertence ao usuário']
-    }
+
+  if(await model.clientId !== model.authClient){
+    throw new NotAuthorizedUserError()
   };
   
-  const { name, birthdate, address, state, city, phoneNumber, image } = model;
+  const { name, birthdate, address, uf, city, phoneNumber, image } = model;
 
   clientsFromDB.name = name;
   clientsFromDB.birthdate = birthdate;
   clientsFromDB.address = address;
-  clientsFromDB.state = state;
+  clientsFromDB.uf = uf;
   clientsFromDB.city = city;
   clientsFromDB.phoneNumber = phoneNumber;
 
@@ -78,31 +69,27 @@ const editClient = async (clientId, model) => {
     message: 'Operação realizada com sucesso.',
     data: {...toListItemDTO(clientsFromDB)}
   }
-}
+};
 
 
 const getAllClients = async () => {
   const clientsFromDB = await clients.find({kind:'client'})
-  if(!clientsFromDB){
-    return {
-      success: false,
-      message: 'Não foi possível realizar operação',
-      details: ['Não há clientes cadastrados']
-    }
+  if(clientsFromDB.length <= 0) {
+    throw new BusinessRuleError("There is no Client registered yet.")
   }
-  return clientsFromDB.map(clientsDB => {
-    return toListItemDTO(clientsDB)
-  });  
+  return {
+    success:true,
+    message: 'Operação realizada com sucesso.',
+    data: clientsFromDB.map(clientsDB => {
+      return toListItemDTO(clientsDB)
+    }),
+  }
 };
 
 const getClientsById = async (clientId) => {
   const clientsFromDB = await clients.findById(clientId);
   if(!clientsFromDB){
-    return {
-      success: false,
-      message: 'Não foi possível realizar operação',
-      details: ['Não há cliente cadastrado com o id informado']
-    }
+    throw new BusinessRuleError("there's no supplier with the informed ID")
   };
   return {
     success:true,
@@ -112,48 +99,33 @@ const getClientsById = async (clientId) => {
 }
 
 const deleteCliente = async (clientId) => {
-  const clientsFromDB = await clients.findById(clientId);
+  const clientsFromDB = await clients.findById({_id:clientId});
   if(!clientsFromDB){
-    return {
-      success: false,
-      message: 'Não foi possível realizar operação',
-      details: ['Não há cliente cadastrado com o id informado']
-    }
+    throw new BusinessRuleError("there's no client with the informed ID")
   };
-  if(clientsFromDB.id !== clientId ){
-    return {
-      success: false,
-      message: 'Operação não permitida',
-      details: ['Id informado não pertence ao usuário']
-    }
-  };
-
+  
   const { image } = clientsFromDB;
-  fileUtils.remove('clients', image.name);
+  if (image){
+    fileUtils.remove('clients', image.name);
+  }
 
   await clients.deleteOne({
     _id:clientId
   })
   
   return {
-    success:true,
+    success: true,
     message: 'Operação realizada com sucesso.',
-    data: {
-      id: clientId,
-      name: clientsFromDB.name
-    }
+    data: `The client ${clientsFromDB.name} with de id ${clientsFromDB.id}, has been deleted`
   }
 }
 
 const changeClientStatus = async(clientId, status) => {
   const clientsFromDB = await clients.findById(clientId);
   if(!clientsFromDB){
-    return {
-      success: false,
-      message: 'Não foi possível realizar operação',
-      details: ['Não há cliente cadastrado com o id informado']
-    }
+    throw new BusinessRuleError("there's no client with the informed ID")
   };
+
   clientsFromDB.status = status;
   await clientsFromDB.save()
   return {

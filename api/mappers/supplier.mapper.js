@@ -18,14 +18,21 @@ const toListItemDTO = (model) => {
 
 // retorna tudo
 const toDTO = (model) => {
-  const { _id, password, cratedAt, udatedAt, __v, kind, products, image, ...content } = model
+  const { _id, likesSupplier, password, cratedAt, updatedAt, __v, kind, products, image, ...content } = model
 
   return {
     id: _id,
     image: fileUtils.createDownloadAddress('supplier', `${image.name}` || ''),
+    likesSupplier: likesSupplier.map(item => {
+      return {
+        id: item._id,
+        clientId: item.client._id,
+        clientName: item.client.name,
+      }
+    }),
     ...content,  
   }
-}
+};
 
 module.exports = {
   toListItemDTO,

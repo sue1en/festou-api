@@ -1,10 +1,15 @@
 const { user } = require('../models/index');
+const { supplier } = require('../models/index');
+
 const cryptography = require('../utils/cryptography.utils');
 const userMapper = require('../mappers/user.mapper');
+const NotAuthenticatedUserError = require('../utils/errors/error-not-authenticated-user');
+const NotAuthorizedUserError = require('../utils/errors/error-not-authorized-user');
+
 
 const profiles = [
   {
-    id:'1',
+    id: 1,
     description:'admin',
     actions:[
       'CREATE_CATEGORY',
@@ -12,6 +17,8 @@ const profiles = [
       'ACTIVATE_CATEGORY',
       'DEACTIVATE_CATEGORY',
       'DELETE_CATEGORY',
+      'DELETE_SUPPLIER',
+      'DENIE_SUPPLIER',
       'ACTIVATE_SUPPLIER',
       'DEACTIVATE_SUPPLIER',
       'DELETE_PRODUCT',
@@ -25,7 +32,7 @@ const profiles = [
     ]
   },
   {
-    id:'2',
+    id: 2,
     description:'supplier',
     actions:[
       'EDIT_SUPPLIER',
@@ -39,15 +46,29 @@ const profiles = [
     ]
   },
   {
-    id:'3',
+    id: 3,
     description:'client',
     actions:[
       'EDIT_CLIENT',
-      'DELETE_CLIENT',
       'GET_BY_ID_CLIENT',
     ]
-  }
-]
+  },
+];
+
+const findProfileById = async(profileId) => {
+  const result = await profiles.find(item => Number(item.id) === Number(profileId));
+  return result; 
+};
+
+const supplierUserValidate = async (userEmail) => {
+  const userDB = await supplier.findOne({
+    email: userEmail,
+  });
+
+  if (userDB.kind === 'supplier')
+    return userDB.status === 'Ativo' ? true : false;
+  return true;
+};
 
 const isEmailRegistered = async (email) => {
   const resultFromDB = await user.find({ email });
@@ -62,7 +83,6 @@ const createCredential = async (userEmail) => {
   const userDB = await user.findOne({
     email: userEmail,
   });
-  
   const userDTO = userMapper.toUserDTO(userDB);
   return {
     token: cryptography.createToken(userDTO),
@@ -74,32 +94,24 @@ const authUserService = async (email, password) => {
   const resultFromDB = await userValidate(email, password);
   
   if(!resultFromDB){
-    return {
-      success: false,
-      message: "não foi possível autenticar o usuário",
-      details: [
-        "usuário ou senha inválido",
-      ],
-    }
-  }
+    throw new NotAuthenticatedUserError('User or password incorrect')
+  };
+  
+  if(!(await supplierUserValidate(email))){
+    throw new NotAuthorizedUserError('The account was not activated by the admin.')
+  };
 
   return {
     success: true,
-    message: "usuário autenticado com sucesso",
+    message: "Successfully authenticated",
     data: await createCredential(email) 
   }
-};
-
-const findProfileById = async(profileId) => {
-  const result = await profiles.find(item => Number(item.id) === Number(profileId));
-  return result; 
 };
 
 const validateProfileActions = async (profileId, actions) => {
   const profile = await findProfileById(profileId);
   return profile.actions.includes(actions);
 }
-
 
 module.exports = {
   authUserService, 

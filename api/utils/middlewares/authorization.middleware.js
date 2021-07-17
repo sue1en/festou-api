@@ -1,30 +1,32 @@
-const { isEmailRegistered, validateProfileActions } = require('../../services/user.service')
-const cryptoUtils = require('../cryptography.utils')
+const { isEmailRegistered, validateProfileActions } = require('../../services/user.service');
+const cryptoUtils = require('../cryptography.utils');
 
-const actionAuth = (rota = '*') => {
+const NotAuthenticatedUserError = require('../errors/error-not-authenticated-user');
+const NotAuthorizedUserError = require('../errors/error-not-authorized-user');
+
+
+const actionAuth = (route = '*') => {
   return async (req, res, next) => {
+    const routeTest = route;
+
     const { token } = req.headers;
-    
     if(!token){
-      return res.status(403).send({message: "Usuário não autorizado"})
-    }
+      throw new NotAuthenticatedUserError('Oops! User not authenticated!')
+    };
     
     if(!cryptoUtils.validateToken(token)){
-      return res
-      .status(401)
-      .send({message: "Usuário não autenticado."})
+      throw new NotAuthorizedUserError('Oops! User not authorized!');
     }
     
     const { id, email, kind } = cryptoUtils.decodeToken(token);
     
     if(! (await isEmailRegistered(email))){
-      return res.status(403).send({message: "usuário não autorizado."})
+     throw new NotAuthorizedUserError('Oops! User not authorized!');
     }
     
-    if(rota != '*'){
-      if(!(await validateProfileActions(kind, rota))){
-        return res.status(403).send({ message: "usuário não autorizado." })
-      }
+    if(routeTest != '*'){
+      if(!await validateProfileActions(kind, routeTest))
+        throw new NotAuthorizedUserError('Oops! User not authorized!');
     }
     req.user = {
       id,

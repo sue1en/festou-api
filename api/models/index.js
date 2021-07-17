@@ -43,11 +43,20 @@ const products = mongoose.model('products', createSchema(undefined, productsSche
   }
 }));
 
+const suppliersLikesSchema = require('./suppliers-likes.model');
+const suppliersLikes = mongoose.model('suppliersLikes', createSchema(undefined, suppliersLikesSchema, {
+  collection: 'suppliersLikesCollection',
+  toJSON: {
+    virtuals:true,
+  }
+}));
+
 module.exports = {
   user,
   admin,
   supplier,
   clients,
   categories,
-  products
+  products,
+  suppliersLikes,
 };

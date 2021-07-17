@@ -1,5 +1,5 @@
-const manageUserType = (type) => {
-  switch (type) {
+const manageUserType = (kind) => {
+  switch (kind) {
     case 'admin':
       return 1;
     case 'supplier':
@@ -9,27 +9,15 @@ const manageUserType = (type) => {
     default:
       break;
   }
-}
-
-// const toUser2DTO = (model) => {
-//   const { id, email, kind, name, tradeName } = model;
-
-//   console.log('nome: ', name);
-
-//   return {
-//     id,
-//     email,
-//     name: name ? name : tradeName,
-//     userType: manageUserType(kind),
-//   }
-// }
+};
 
 const toUserDTO = (model) => {
-  const { _id, email, kind } = model;
+  const { _id, email, kind, status } = model;
   return {
     id: _id,
     email,
     kind: manageUserType(kind),
+    status,
   }
 }
 

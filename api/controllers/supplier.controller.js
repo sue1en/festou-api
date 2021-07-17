@@ -5,7 +5,7 @@ module.exports = {
   createSupplierCTRL: async (req, res, next) => {
     const { body } = req
 
-    const serviceResult = await supplierService.createSupllier(body);
+    const serviceResult = await supplierService.createSupplier(body);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.details}
 
@@ -14,10 +14,12 @@ module.exports = {
   },
 
   editSupplierCTRL: async (req, res, next) => {
-    const { params, body } = req
-
-    // console.log( params, body )
-    const serviceResult = await supplierService.editSupplier(params.supplierId, body);
+    const { params, body, user } = req
+    const serviceResult = await supplierService.editSupplier({
+      ...params,
+      ...body,
+      authSupplier: user.id,
+    });
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.details}
 
@@ -30,29 +32,33 @@ module.exports = {
    
     const serviceResult = await supplierService.deleteSupplier(params.supplierId);
     const statusCodeReturn = serviceResult.success ? 200 : 400;
-    const dataReturn = serviceResult.success ? {message: serviceResult.message} : {details: serviceResult.details}
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.details}
 
     return res.status(statusCodeReturn).send({messege:serviceResult.message, ...dataReturn
     }); 
   },
 
   getAllSupplierCTRL: async (req, res, next) => {
-    const serviceResult = await supplierService.getAllSupllier();
-    return res.status(200).send({data: serviceResult})
+    const serviceResult = await supplierService.getAllSupplier();
+    const stautusCodeReturn = serviceResult.success ? 200 : 400;
+    const dataReturn = serviceResult.success ? {data:serviceResult.data} : {details: serviceResult.datails}
+    
+    return res.status(stautusCodeReturn).send({message: serviceResult.message, ...dataReturn})
   },
 
   getSupplierByIdCTRL: async (req, res, next) => {
     const { params } = req
-    const serviceResult = await supplierService.getSupllierById(params.supplierId);
-    if(!serviceResult){
-      return res.status(400).send({ details: ["Fornecedor não existe"]});
-    }
-    return res.status(200).send({data:serviceResult});
+    const serviceResult = await supplierService.getSupplierById(params.supplierId);
+    
+    const statusCodeReturn = serviceResult.success ? 200 : 400;
+    const dataReturn = serviceResult.success ? { data: serviceResult.data } : {detail: serviceResult.details};
+
+    return res.status(statusCodeReturn).send({message:serviceResult.message, ...dataReturn});
   },
 
   activateSupplierCTRL: async (req, res, next) => {
     const { supplierId } = req.params;
-    const serviceResult = await supplierService.changeSupplierStatus(supplierId, 'Ativa');
+    const serviceResult = await supplierService.changeSupplierStatus(supplierId, 'Ativo');
 
     const statusCodeReturn = serviceResult.success ? 200 : 400;
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails};
@@ -69,7 +75,20 @@ module.exports = {
     const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails};
   
     return res.status(statusCodeReturn).send({
-      message: "Operação realizada com sucesso.",
+      message: serviceResult.message,
+      ...dataReturn
+    })
+  },
+
+  denieSupplierCTRL: async (req, res, next) => {
+    const { supplierId } = req.params;
+    const serviceResult = await supplierService.changeSupplierStatus(supplierId, 'Recusado');
+  
+    const statusCodeReturn = serviceResult.success ? 200 : 400;
+    const dataReturn = serviceResult.success ? {data: serviceResult.data} : {details: serviceResult.datails};
+  
+    return res.status(statusCodeReturn).send({
+      message: serviceResult.message, 
       ...dataReturn
     })
   },

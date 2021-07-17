@@ -9,13 +9,13 @@ const createAddress = (destino, fileName = "" ) => {
   return path.join(root_dir, destino, fileName)
 };
 
+const createDownloadAddress = (origem, fileName) => {
+  return path.join('/static', origem, fileName);
+}
+
 const createName = (type) => {
   const tipoTratado = type.split('/')[1];
   return `${Uuid()}.${tipoTratado}`;
-}
-
-const createDownloadAddress = (origem, fileName) => {
-  return path.join('/static', origem, fileName);
 }
 
 const move = (temporario, definitivo) => {
