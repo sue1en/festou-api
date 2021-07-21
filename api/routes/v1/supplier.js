@@ -190,28 +190,28 @@ module.exports = (Router) => {
         })
       })),
       asyncMiddleware(validateDTO('body', {
-      name: joi.string().required().messages({
-        'any.required': `"name" é um campo obrigatório`,
-        'string.empty': `"name" não deve ser vazio`,
-      }),
-      description: joi.string().required().messages({
-        'any.required': `"description" é um campo obrigatório`,
-        'string.empty': `"description" não deve ser vazio`,
-      }),
-      price: joi.number().required().messages({
-        'any.required': `"price" é um campo obrigatório`,
-        'string.empty': `"price" não deve ser vazio`,
-      }),
-      // status: joi.boolean().required().messages({
-      //   'any.required': `"status" é um campo obrigatório`,
-      //   'booleam.empty': `"status" não deve ser vazio`,
-      // }),
-      categoriesId: joi.string().required().messages({
-        'any.required': `"categoriesId" é um campo obrigatório`,
-        'string.empty': `"categoriesId" não deve ser vazio`,
-      }),
-    }, {
-      allowUnknown: true,
+        name: joi.string().required().messages({
+          'any.required': `"name" é um campo obrigatório`,
+          'string.empty': `"name" não deve ser vazio`,
+        }),
+        description: joi.string().required().messages({
+          'any.required': `"description" é um campo obrigatório`,
+          'string.empty': `"description" não deve ser vazio`,
+        }),
+        price: joi.number().required().messages({
+          'any.required': `"price" é um campo obrigatório`,
+          'string.empty': `"price" não deve ser vazio`,
+        }),
+        // status: joi.boolean().required().messages({
+        //   'any.required': `"status" é um campo obrigatório`,
+        //   'booleam.empty': `"status" não deve ser vazio`,
+        // }),
+        categoriesId: joi.string().required().messages({
+          'any.required': `"categoriesId" é um campo obrigatório`,
+          'string.empty': `"categoriesId" não deve ser vazio`,
+        }),
+      }, {
+        allowUnknown: true,
     })),
     asyncMiddleware(productsController.CreateProductCTRL)
   )
