@@ -23,6 +23,7 @@ const validateToken = (token) => {
   }
 };
 
+
 const decodeToken = (token) => {
   return jwt.decode(token);
 }
