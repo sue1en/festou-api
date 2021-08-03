@@ -1,20 +1,15 @@
 const fileUtils = require('../utils/file.utils');
 
 const toListItemDTO = (model) => {
-  const { _id, email, name, birthdate, address, city, uf,  phoneNumber, kind, status, image } = model;
+  const { _id, name, email, kind, status } = model;
 
   return {
     id: _id,
-    email,
     name,
-    birthdate,
-    address,
-    city,
-    uf,
-    phoneNumber,
+    email,
     kind,
     status,
-    image: fileUtils.createDownloadAddress('clients', `${image.name}` || ''),
+
   }
 }
 
