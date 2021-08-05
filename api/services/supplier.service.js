@@ -72,7 +72,7 @@ const getSupplierById = async(supplierId) => {
     data: toListItemDTO(supplierFromDB),
   }
 };
-//TODO error
+
 const editSupplier = async(model) => {
   const supplierFromDB = await supplier.findById(model.supplierId)
   if(!supplierFromDB){

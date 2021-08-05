@@ -94,7 +94,7 @@ const getClientsById = async (clientId) => {
   return {
     success:true,
     message: 'Operação realizada com sucesso.',
-    data: {...toDTO(clientsFromDB)}
+    data: {...toListItemDTO(clientsFromDB)}
   }
 }
 

@@ -1,6 +1,5 @@
 const { user } = require('../models/index');
 const { supplier } = require('../models/index');
-
 const cryptography = require('../utils/cryptography.utils');
 const userMapper = require('../mappers/user.mapper');
 const NotAuthenticatedUserError = require('../utils/errors/error-not-authenticated-user');
@@ -12,6 +11,8 @@ const profiles = [
     id: 1,
     description:'admin',
     actions:[
+      'GET_BY_ID_ADMIN',
+      'GET_ALL_ADMIN',
       'CREATE_CATEGORY',
       'EDIT_CATEGORY',
       'ACTIVATE_CATEGORY',
