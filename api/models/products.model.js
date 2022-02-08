@@ -32,7 +32,6 @@ const productsSchema = {
       require: false,
     },
   },
-
   categories:{
     type: Schema.Types.ObjectId,
     ref: 'categories'
